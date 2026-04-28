@@ -40,35 +40,35 @@ interface PricingCard {
 
 const HERO_STATS: StatItem[] = [
   {
-    value: '4→1',
+    value: '5→1',
     numericTarget: 1,
     suffix: '',
-    label: 'application unique',
-    sub: 'remplace Strava, MyFitnessPal, Sleep Cycle et plus',
+    label: 'seul assistant',
+    sub: 'remplace Strava, MyFitnessPal, Sleep Cycle, votre agenda et plus',
   },
   {
-    value: '30%',
-    numericTarget: 30,
-    suffix: '%',
-    label: 'des Français',
-    sub: 'possèdent une enceinte connectée',
+    value: '3s',
+    numericTarget: 3,
+    suffix: 's',
+    label: 'pour tout logger',
+    sub: 'Dites "j\'ai mangé une pizza" — les calories sont comptées',
   },
   {
-    value: '78%',
-    numericTarget: 78,
-    suffix: '%',
-    label: 'confidentialité N°1',
-    sub: 'en font leur critère principal',
+    value: '0',
+    numericTarget: 0,
+    suffix: '',
+    label: 'cloud obligatoire',
+    sub: 'votre IA tourne sur votre Aether, vos données restent chez vous',
   },
 ]
 
 const AETHER_SPECS: SpecCard[] = [
-  { label: '3 mics directionnels', sub: 'Beamforming 360° · 5m portée' },
-  { label: 'IA locale embarquée', sub: 'Traitement on-device · AES-256' },
-  { label: 'WiFi 6 + BT 5.2', sub: 'Sync <200ms · 30m portée' },
-  { label: 'IP54 waterproof', sub: 'Résistant projections d\'eau' },
-  { label: '8h d\'autonomie', sub: 'Recharge USB-C 90min' },
-  { label: 'Veille 30j', sub: '200μW en standby intelligent' },
+  { label: 'Capte votre voix à 5m', sub: 'Même avec de la musique ou du bruit en fond' },
+  { label: 'Traitement 100% local', sub: 'Aucune donnée envoyée dans le cloud · zéro écoute tierce' },
+  { label: 'Connexion instantanée', sub: 'Sync avec votre app en moins de 200ms' },
+  { label: 'Résistant au quotidien', sub: 'Vapeur de douche, cuisine, projections d\'eau' },
+  { label: 'Toute une journée', sub: '8h d\'utilisation · rechargement rapide 90min USB-C' },
+  { label: 'Toujours disponible', sub: 'Standby ultra-basse conso · répond en un instant' },
 ]
 
 const APP_PILLS = [
@@ -81,19 +81,19 @@ const APP_PILLS = [
 const CHAT_BUBBLES: ChatBubble[] = [
   {
     command: 'Lance un HIIT 30 min',
-    response: 'Séance démarrée · Coach vocal actif · Playlist adaptative lancée',
+    response: 'C\'est parti ! Durée 30 min · intensité adaptée à votre récupération · playlist Cardio lancée',
   },
   {
     command: "J'ai mangé une pizza",
-    response: '820 kcal ajoutées · Bilan nutritionnel mis à jour',
+    response: 'Noté ! 820 kcal · vos macros du jour sont ajustées · il vous reste 540 kcal pour ce soir',
   },
   {
     command: "Comment j'ai dormi ?",
-    response: 'Score 78/100 · +12% vs la semaine dernière',
+    response: 'Très bien ! 7h12 de sommeil · score 78/100 · +12% vs la semaine — bien récupéré ✓',
   },
   {
     command: "Rappelle-moi d'appeler Paul ce soir",
-    response: 'Rappel créé à 19h · Synchronisé dans l\'agenda',
+    response: 'Rappel créé à 19h00 · calendrier mis à jour · je vous préviens 5 min avant',
   },
 ]
 
@@ -103,11 +103,11 @@ const PRICING_CARDS: PricingCard[] = [
     price: 'Gratuit',
     highlight: false,
     features: [
-      '1 domaine de bien-être',
-      '50 interactions vocales/mois',
-      'App basique',
+      '1 pilier santé à choisir',
+      '50 commandes vocales/mois',
+      'Tableaux de bord essentiels',
     ],
-    cta: 'Démarrer',
+    cta: 'Démarrer gratuitement',
   },
   {
     tier: 'PREMIUM',
@@ -115,21 +115,21 @@ const PRICING_CARDS: PricingCard[] = [
     highlight: true,
     features: [
       'Sport + Nutrition + Sommeil',
-      'Interactions illimitées',
-      'Recommandations IA avancées',
+      'Commandes vocales illimitées',
+      'Coach IA personnalisé',
     ],
-    cta: 'Commencer — 14j gratuits',
+    cta: 'Essayer 14j gratuits',
   },
   {
     tier: 'PRO',
     price: '19,99€/mois',
     highlight: false,
     features: [
-      'Tout Premium',
-      'Organisation + Intégrations',
-      'API + données brutes',
+      'Tout ce qu\'inclut Premium',
+      'Agenda + apps tierces connectées',
+      'Export données + accès API',
     ],
-    cta: 'Essai Pro',
+    cta: 'Découvrir Pro',
   },
 ]
 
@@ -674,8 +674,8 @@ export default function ScrollStory() {
                 fontFamily: 'var(--font-dm-sans)',
               }}
             >
-              NSLysium centralise sport, nutrition, sommeil et organisation. Un écosystème
-              complet piloté par votre voix — appris de vous, pour vous.
+              Combien d'apps ouvrez-vous chaque matin pour suivre votre santé ?
+              NSLysium remplace tout ça. Parlez simplement — il s'occupe du reste.
             </p>
 
             {/* CTA row */}
@@ -812,9 +812,9 @@ export default function ScrollStory() {
                 fontFamily: 'var(--font-dm-sans)',
               }}
             >
-              Aether capte votre voix à 5 mètres dans le bruit. Beamforming directionnel,
-              traitement embarqué, chiffrement AES-256. Vos données ne quittent jamais
-              votre domicile.
+              Posez Aether dans votre salon ou votre cuisine. Parlez normalement —
+              même avec de la musique en fond. Tout est traité sur l'appareil :
+              personne d'autre n'écoute.
             </p>
 
             {/* Spec bar */}
@@ -927,9 +927,9 @@ export default function ScrollStory() {
                 fontFamily: 'var(--font-dm-sans)',
               }}
             >
-              Sport, nutrition, sommeil, agenda — synchronisés en temps réel avec votre
-              Aether. L'IA analyse vos données et vous envoie des recommandations
-              proactives.
+              Vous avez mal dormi hier et couru ce matin ? NSLysium le sait et
+              adapte vos objectifs du jour en conséquence. Vous visualisez tout,
+              sans avoir rien à saisir manuellement.
             </p>
 
             {/* Dashboard mockup */}
@@ -1124,8 +1124,9 @@ export default function ScrollStory() {
                 fontFamily: 'var(--font-dm-sans)',
               }}
             >
-              Du réveil au coucher, NSLysium observe, apprend et anticipe. Votre
-              routine devient intelligente.
+              Le matin, NSLysium vous dit comment vous avez dormi et ce que vous
+              devriez manger. Le soir, il fait votre bilan. Entre les deux — il
+              enregistre, sans que vous y pensiez.
             </p>
 
             {/* Chat bubbles */}
@@ -1281,8 +1282,9 @@ export default function ScrollStory() {
                 fontFamily: 'var(--font-dm-sans)',
               }}
             >
-              Commencez gratuitement. Évoluez à votre rythme. Rejoignez les premières
-              personnes à centraliser leur bien-être.
+              Commencez avec ce qui compte pour vous. NSLysium apprend, s'adapte,
+              et évolue avec vos objectifs. Pas d'engagement — juste votre
+              meilleure version.
             </p>
 
             {/* Pricing cards */}
