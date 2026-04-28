@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Palette NSLysium */
+  --color-primary: #C4622D;
+  --color-primary-light: #D4773F;
+  --color-primary-dark: #A34E1F;
+  --color-cream: #FAF7F2;
+  --color-cream-dark: #F0E4D0;
+  --color-dark: #16120E;
+  --color-dark-card: #221E18;
+  --color-dark-border: #2E271F;
+  --color-warm-gray: #7A6A58;
+  --color-warm-gray-light: #A09484;
+  --color-text: #1A1A1A;
+  --color-text-muted: #7A6A58;
+
+  /* Typographie */
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-dm-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Scrollbar custom */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #16120E; }
+::-webkit-scrollbar-thumb { background: #C4622D; border-radius: 3px; }
+
+html {
+  /* scroll-behavior: smooth retiré — interfère avec GSAP ScrollTrigger */
+}
+
+/* ─── Grille décorative (fond global) ────────────────────────────────────── */
+.grid-bg {
+  --mx: 50vw;
+  --my: 50vh;
+  background:
+    /* Spotlight souris — cercle chaud centré sur le curseur */
+    radial-gradient(600px circle at var(--mx) var(--my),
+      rgba(196, 98, 45, 0.18) 0%,
+      rgba(196, 98, 45, 0.07) 40%,
+      transparent 70%
+    ),
+    /* Halo statique en haut de page */
+    radial-gradient(ellipse 90% 55% at 50% 0%,
+      rgba(196, 98, 45, 0.12) 0%,
+      transparent 65%
+    ),
+    /* Lignes horizontales */
+    linear-gradient(rgba(196, 98, 45, 0.12) 1px, transparent 1px),
+    /* Lignes verticales */
+    linear-gradient(90deg, rgba(196, 98, 45, 0.12) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    72px 72px,
+    72px 72px;
+  background-position:
+    0 0,
+    0 0,
+    -1px -1px,
+    -1px -1px;
+  transition: background 0.05s linear;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #16120E;
+  color: #FAF7F2;
+  font-family: var(--font-body), 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
+
+.font-display { font-family: var(--font-display), 'Fraunces', serif; }
+
+.text-balance { text-wrap: balance; }
+
+.text-gradient {
+  background: linear-gradient(135deg, #C4622D 0%, #D4773F 50%, #FAF7F2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-primary {
+  box-shadow: 0 0 40px rgba(196, 98, 45, 0.3), 0 0 80px rgba(196, 98, 45, 0.1);
+}
+
+.glass {
+  background: rgba(34, 30, 24, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(196, 98, 45, 0.15);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-18px); }
+}
+
+@keyframes wave-ring {
+  0% { transform: scale(0.8); opacity: 0.6; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float { animation: float 5s ease-in-out infinite; }
+
+.wave-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(196, 98, 45, 0.45);
+  animation: wave-ring 3.5s ease-out infinite;
+}
+.wave-ring:nth-child(2) { animation-delay: 0.9s; }
+.wave-ring:nth-child(3) { animation-delay: 1.8s; }
+.wave-ring:nth-child(4) { animation-delay: 2.7s; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feature-card {
+  background: #221E18;
+  border: 1px solid rgba(196, 98, 45, 0.1);
+}
+.feature-card:hover {
+  border-color: rgba(196, 98, 45, 0.3);
+}
+
+.pricing-card-ghost {
+  border: 1.5px solid rgba(196, 98, 45, 0.4);
+  color: #FAF7F2;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+.pricing-card-ghost:hover {
+  border-color: rgba(196, 98, 45, 0.8);
+  background: rgba(196, 98, 45, 0.06);
+  transform: translateY(-2px);
+}
+
+@keyframes scrollLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(300%); }
+}
+
+/* Scroll horizontal snapping */
+.snap-x { scroll-snap-type: x mandatory; }
+.snap-mandatory > * { scroll-snap-align: start; }
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }

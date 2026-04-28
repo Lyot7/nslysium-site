@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NSLysium — Site Marketing
 
-## Getting Started
+Site web marketing immersif pour **NSLysium**, assistant de vie intelligent combinant hardware (cône IA vocale *Aether*), application mobile (*BetaLysium*) et IA vocale.
 
-First, run the development server:
+> Slogan : **"Reach Your Elysium"**
+
+## Stack
+
+- **Next.js 15** (App Router, Turbopack)
+- **React Three Fiber + Three.js** — cône 3D LatheGeometry animé, scroll-driven
+- **GSAP + ScrollTrigger** — scroll storytelling, parallaxe, animations par section
+- **Tailwind CSS v4**
+- **Fraunces** (serif) + **DM Sans** (sans-serif)
+
+## Démarrage
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+├── _components/
+│   ├── AetherScene.tsx    # Cône 3D R3F + animation scroll
+│   ├── ScrollStory.tsx    # 5 sections scroll storytelling
+│   ├── GridBackground.tsx # Grille terracotta + spotlight souris
+│   ├── Header.tsx
+│   └── Footer.tsx
+├── abonnement/            # Page tarifs Freemium / Premium / Pro
+├── produit/               # Page produit détaillée
+├── contact/               # Formulaire contact
+├── globals.css
+└── layout.tsx
+```
 
-## Learn More
+## Pages
 
-To learn more about Next.js, take a look at the following resources:
+| Route | Description |
+|---|---|
+| `/` | Landing immersive — scroll storytelling 5 sections |
+| `/produit` | Présentation détaillée Aether + BetaLysium |
+| `/abonnement` | Comparatif Freemium / Premium / Pro |
+| `/contact` | Formulaire contact (mailto) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Projet
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Projet étudiant — Master Win Sport School.
+Équipe : Grégoire Delarue, Guéwenn Gobé, Léo Auger, Manon Godier.
