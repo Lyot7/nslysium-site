@@ -80,37 +80,47 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
   const groupRef     = useRef<THREE.Group>(null)
   const innerRef     = useRef<THREE.Group>(null)
   const lightRef     = useRef<THREE.PointLight>(null)
-  const cur          = useRef({ x: 0, y: 0, sc: 0.58, rx: 0, rz: 0 })
-  const tmpA         = useRef(new THREE.Color())
-  const tmpB         = useRef(new THREE.Color())
-  const targetCol    = useRef(new THREE.Color())
-  const orangeMatRef = useRef<THREE.MeshStandardMaterial | null>(null)
+  const cur           = useRef({ x: 0, y: 0, sc: 0.58, rx: 0, rz: 0 })
+  const tmpA          = useRef(new THREE.Color())
+  const tmpB          = useRef(new THREE.Color())
+  const targetCol     = useRef(new THREE.Color())
+  // Tous les matériaux "colorables" (tout sauf tissu/grille/tip blancs)
+  const colorableMats = useRef<THREE.MeshStandardMaterial[]>([])
 
   useEffect(() => {
+    const seen = new Set<string>()
+    colorableMats.current = []
+
     scene.traverse((obj) => {
       if (!(obj as THREE.Mesh).isMesh) return
       const mesh = obj as THREE.Mesh
       mesh.castShadow    = true
       mesh.receiveShadow = true
       const mat = mesh.material as THREE.MeshStandardMaterial
-      if (!mat) return
-      mat.envMapIntensity = 1.8
-      if (mat.name === 'M_Orange') {
-        mat.roughness        = 0.45
-        mat.envMapIntensity  = 2.0
-        orangeMatRef.current = mat
-      }
-      if (mat.name === 'M_Fabric') {
+      if (!mat || seen.has(mat.uuid)) return
+      seen.add(mat.uuid)
+
+      const n = mat.name.toLowerCase()
+
+      if (n.includes('fabric') || n.includes('tissu') || n.includes('grille')) {
         mat.roughness       = 0.85
         mat.envMapIntensity = 1.2
-      }
-      if (mat.name === 'M_White') {
+      } else if (n.includes('white') || n.includes('blanc') || n.includes('tip')) {
         mat.roughness       = 0.35
         mat.envMapIntensity = 1.5
+      } else {
+        // Matériau principal du cône / socle — colorable
+        mat.roughness       = 0.45
+        mat.envMapIntensity = 2.0
+        // Forcer immédiatement la couleur cible pour éviter le flash jaune
+        mat.color.set(colorRef.current)
+        colorableMats.current.push(mat)
       }
+
+      mat.envMapIntensity = mat.envMapIntensity ?? 1.8
       mat.needsUpdate = true
     })
-  }, [scene])
+  }, [scene, colorRef])
 
   useFrame((state) => {
     if (!groupRef.current || !innerRef.current || !lightRef.current) return
@@ -165,10 +175,12 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
       0.05,
     )
 
-    // Couleur du cône (M_Orange) selon le coloris sélectionné
-    if (orangeMatRef.current) {
+    // Couleur du cône selon le coloris sélectionné
+    if (colorableMats.current.length > 0) {
       targetCol.current.set(colorRef.current)
-      orangeMatRef.current.color.lerp(targetCol.current, 0.05)
+      for (const mat of colorableMats.current) {
+        mat.color.lerp(targetCol.current, 0.06)
+      }
     }
   })
 
