@@ -84,8 +84,8 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
   const tmpA          = useRef(new THREE.Color())
   const tmpB          = useRef(new THREE.Color())
   const targetCol     = useRef(new THREE.Color())
-  // Tous les matériaux "colorables" (tout sauf tissu/grille/tip blancs)
-  const colorableMats = useRef<THREE.MeshStandardMaterial[]>([])
+  // Matériaux colorables avec leur couleur originale du GLB sauvegardée
+  const colorableMats = useRef<Array<{ mat: THREE.MeshStandardMaterial; orig: THREE.Color }>>([])
 
   useEffect(() => {
     const seen = new Set<string>()
@@ -112,15 +112,13 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
         // Matériau principal du cône / socle — colorable
         mat.roughness       = 0.45
         mat.envMapIntensity = 2.0
-        // Forcer immédiatement la couleur cible pour éviter le flash jaune
-        mat.color.set(colorRef.current)
-        colorableMats.current.push(mat)
+        // Sauvegarder la couleur native du GLB (référence pour le coloris "Orange")
+        colorableMats.current.push({ mat, orig: mat.color.clone() })
       }
 
-      mat.envMapIntensity = mat.envMapIntensity ?? 1.8
       mat.needsUpdate = true
     })
-  }, [scene, colorRef])
+  }, [scene])
 
   useFrame((state) => {
     if (!groupRef.current || !innerRef.current || !lightRef.current) return
@@ -176,10 +174,12 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
     )
 
     // Couleur du cône selon le coloris sélectionné
+    // '__original__' = coloris Orange → restaure la couleur native du GLB
     if (colorableMats.current.length > 0) {
-      targetCol.current.set(colorRef.current)
-      for (const mat of colorableMats.current) {
-        mat.color.lerp(targetCol.current, 0.06)
+      const useOrig = colorRef.current === '__original__'
+      if (!useOrig) targetCol.current.set(colorRef.current)
+      for (const { mat, orig } of colorableMats.current) {
+        mat.color.lerp(useOrig ? orig : targetCol.current, 0.06)
       }
     }
   })

@@ -163,10 +163,11 @@ export default function ScrollStory() {
   const [isMobile, setIsMobile]           = useState(false)
   const [activeColoris, setActiveColoris] = useState(1) // 1 = Orange, correspond à la couleur d'origine du modèle
 
-  const colorRef = useRef(AETHER_COLORIS[1].hex)
+  // '__original__' = index 1 (Orange) → le modèle affiche sa couleur native du GLB
+  const colorRef = useRef('__original__')
 
   useEffect(() => {
-    colorRef.current = AETHER_COLORIS[activeColoris].hex
+    colorRef.current = activeColoris === 1 ? '__original__' : AETHER_COLORIS[activeColoris].hex
   }, [activeColoris])
 
   const specBarRef = useRef<HTMLDivElement>(null)
