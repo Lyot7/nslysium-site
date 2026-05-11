@@ -102,17 +102,14 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
 
       const n = mat.name.toLowerCase()
 
-      if (n.includes('fabric') || n.includes('tissu') || n.includes('grille')) {
-        mat.roughness       = 0.85
-        mat.envMapIntensity = 1.2
-      } else if (n.includes('white') || n.includes('blanc') || n.includes('tip')) {
+      if (n.includes('white') || n.includes('blanc') || n.includes('tip')) {
+        // Parties blanches (bande lumineuse, icônes) — couleur fixe
         mat.roughness       = 0.35
         mat.envMapIntensity = 1.5
       } else {
-        // Matériau principal du cône / socle — colorable
-        mat.roughness       = 0.45
-        mat.envMapIntensity = 2.0
-        // Sauvegarder la couleur native du GLB (référence pour le coloris "Orange")
+        // Tout le reste (cône, grille, socle) change de couleur avec le coloris
+        mat.roughness       = n.includes('fabric') || n.includes('tissu') || n.includes('grille') ? 0.85 : 0.45
+        mat.envMapIntensity = n.includes('fabric') || n.includes('tissu') || n.includes('grille') ? 1.2  : 2.0
         colorableMats.current.push({ mat, orig: mat.color.clone() })
       }
 
