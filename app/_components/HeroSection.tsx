@@ -15,7 +15,8 @@ const AetherScene = dynamic(() => import('./AetherScene'), { ssr: false })
 export default function HeroSection() {
   const heroRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef({ progress: 0, section: 0 })
-  const mouseRef = useRef({ x: 0, y: 0 })
+  const mouseRef  = useRef({ x: 0, y: 0 })
+  const colorRef  = useRef('#F1983A')
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -192,6 +193,7 @@ export default function HeroSection() {
           <AetherScene
             scrollRef={scrollRef}
             mouseRef={mouseRef}
+            colorRef={colorRef}
             style={{ width: '100%', height: '100%' }}
           />
         </div>

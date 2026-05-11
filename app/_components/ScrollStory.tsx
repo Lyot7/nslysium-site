@@ -161,7 +161,13 @@ export default function ScrollStory() {
   const mouseRef      = useRef({ x: 0, y: 0 })
   const [activeSection, setActiveSection] = useState(0)
   const [isMobile, setIsMobile]           = useState(false)
-  const [activeColoris, setActiveColoris] = useState(0)
+  const [activeColoris, setActiveColoris] = useState(1) // 1 = Orange, correspond à la couleur d'origine du modèle
+
+  const colorRef = useRef(AETHER_COLORIS[1].hex)
+
+  useEffect(() => {
+    colorRef.current = AETHER_COLORIS[activeColoris].hex
+  }, [activeColoris])
 
   const specBarRef = useRef<HTMLDivElement>(null)
 
@@ -334,7 +340,7 @@ export default function ScrollStory() {
     <>
       {/* ── Canvas fixe fullscreen ── */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-        <AetherScene scrollRef={scrollRef} mouseRef={mouseRef} style={{ width: '100%', height: '100%' }} />
+        <AetherScene scrollRef={scrollRef} mouseRef={mouseRef} colorRef={colorRef} style={{ width: '100%', height: '100%' }} />
       </div>
 
       {/* ── Indicateur de section ── */}

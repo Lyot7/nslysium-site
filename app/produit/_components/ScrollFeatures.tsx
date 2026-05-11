@@ -45,7 +45,8 @@ export default function ScrollFeatures() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const featuresRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef({ progress: 0, section: 0 })
-  const mouseRef = useRef({ x: 0, y: 0 })
+  const mouseRef  = useRef({ x: 0, y: 0 })
+  const colorRef  = useRef('#F1983A')
 
   useEffect(() => {
     const sectionEl = sectionRef.current
@@ -126,6 +127,7 @@ export default function ScrollFeatures() {
           <AetherScene
             scrollRef={scrollRef}
             mouseRef={mouseRef}
+            colorRef={colorRef}
             style={{ width: '100%', height: '100%' }}
           />
         </div>
