@@ -5,9 +5,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 const navLinks = [
-  { href: '/produit', label: 'Produit' },
-  { href: '/abonnement', label: 'Abonnement' },
-  { href: '/contact', label: 'Contact' },
+  { id: 'produit', label: 'Produit' },
+  { id: 'abonnement', label: 'Abonnement' },
+  { id: 'contact', label: 'Contact' },
 ]
 
 export default function Header() {
@@ -19,6 +19,12 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault()
+    setMenuOpen(false)
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <header
@@ -34,7 +40,11 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <Link href="/" className="flex items-center">
+          <a
+            href="#hero"
+            onClick={(e) => handleAnchorClick(e, 'hero')}
+            className="flex items-center"
+          >
             <Image
               src="/images/logos/NSLysium_Logotype_Principal_1_blanc.svg"
               alt="NSLysium"
@@ -42,13 +52,14 @@ export default function Header() {
               height={32}
               priority
             />
-          </Link>
+          </a>
 
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                onClick={(e) => handleAnchorClick(e, link.id)}
                 className="text-sm font-medium transition-colors duration-200"
                 style={{ color: 'rgba(250, 247, 242, 0.75)' }}
                 onMouseEnter={(e) =>
@@ -59,26 +70,28 @@ export default function Header() {
                 }
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
-            <Link
-              href="/abonnement"
+            <a
+              href="#abonnement"
+              onClick={(e) => handleAnchorClick(e, 'abonnement')}
               className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
               style={{
                 background: '#C4622D',
                 color: '#FAF7F2',
+                textDecoration: 'none',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.background = '#D4773F'
-                ;(e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-1px)'
+                e.currentTarget.style.background = '#D4773F'
+                e.currentTarget.style.transform = 'translateY(-1px)'
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.background = '#C4622D'
-                ;(e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(0)'
+                e.currentTarget.style.background = '#C4622D'
+                e.currentTarget.style.transform = 'translateY(0)'
               }}
             >
               Commencer
-            </Link>
+            </a>
           </nav>
 
           <button
@@ -117,24 +130,24 @@ export default function Header() {
           >
             <nav className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  onClick={(e) => handleAnchorClick(e, link.id)}
                   className="text-base font-medium py-2"
-                  style={{ color: 'rgba(250, 247, 242, 0.85)' }}
-                  onClick={() => setMenuOpen(false)}
+                  style={{ color: 'rgba(250, 247, 242, 0.85)', textDecoration: 'none' }}
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
-              <Link
-                href="/abonnement"
+              <a
+                href="#abonnement"
+                onClick={(e) => handleAnchorClick(e, 'abonnement')}
                 className="mt-2 px-5 py-3 rounded-full text-base font-semibold text-center"
-                style={{ background: '#C4622D', color: '#FAF7F2' }}
-                onClick={() => setMenuOpen(false)}
+                style={{ background: '#C4622D', color: '#FAF7F2', textDecoration: 'none' }}
               >
                 Commencer
-              </Link>
+              </a>
             </nav>
           </div>
         )}

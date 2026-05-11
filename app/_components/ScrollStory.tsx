@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useEffect, useState } from 'react'
-import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import AetherScene from './AetherScene'
@@ -151,6 +150,11 @@ export default function ScrollStory() {
   // Spec bar ref for scaleX animation
   const specBarRef = useRef<HTMLDivElement>(null)
 
+  // Smooth scroll helper (scroll-behavior: smooth désactivé globalement)
+  const smoothScrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   // Responsive detection
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -183,7 +187,7 @@ export default function ScrollStory() {
       end: 'bottom bottom',
       onUpdate: (self) => {
         scrollRef.current.progress = self.progress
-        const sec = Math.min(4, Math.floor(self.progress * 5))
+        const sec = Math.min(5, Math.floor(self.progress * 6))
         scrollRef.current.section = sec
         setActiveSection((prev) => (prev !== sec ? sec : prev))
       },
@@ -472,6 +476,8 @@ export default function ScrollStory() {
     transition: 'transform 0.25s, box-shadow 0.25s',
     fontFamily: 'var(--font-dm-sans)',
     display: 'inline-block',
+    cursor: 'pointer',
+    border: 'none',
   }
 
   const btnGhost: React.CSSProperties = {
@@ -486,6 +492,7 @@ export default function ScrollStory() {
     fontFamily: 'var(--font-dm-sans)',
     display: 'inline-block',
     background: 'transparent',
+    cursor: 'pointer',
   }
 
   const titleSize = isMobile ? 'clamp(1.7rem, 5.5vw, 2.5rem)' : 'clamp(2.2rem, 3.8vw, 4rem)'
@@ -535,7 +542,7 @@ export default function ScrollStory() {
           alignItems: 'flex-end',
         }}
       >
-        {[0, 1, 2, 3, 4].map((i) => (
+        {[0, 1, 2, 3, 4, 5].map((i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span
               style={{
@@ -570,6 +577,7 @@ export default function ScrollStory() {
             SECTION 0 — HERO
         ════════════════════════════════════════════════════════════════════ */}
         <section
+          id="hero"
           className="ss-panel"
           style={{
             minHeight: '100vh',
@@ -688,10 +696,11 @@ export default function ScrollStory() {
                 marginBottom: '2rem',
               }}
             >
-              <Link
-                href="/abonnement"
+              <a
+                href="#abonnement"
                 className="ss-cta"
                 style={btnPrimary}
+                onClick={(e) => { e.preventDefault(); smoothScrollTo('abonnement') }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)'
                   e.currentTarget.style.boxShadow = '0 8px 28px rgba(196,98,45,0.5)'
@@ -702,11 +711,12 @@ export default function ScrollStory() {
                 }}
               >
                 Démarrer gratuitement
-              </Link>
-              <Link
-                href="/produit"
+              </a>
+              <a
+                href="#produit"
                 className="ss-cta"
                 style={btnGhost}
+                onClick={(e) => { e.preventDefault(); smoothScrollTo('produit') }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)'
                   e.currentTarget.style.borderColor = 'rgba(196,98,45,0.7)'
@@ -717,13 +727,13 @@ export default function ScrollStory() {
                 }}
               >
                 Voir le produit
-              </Link>
+              </a>
             </div>
 
             {/* Progress dots */}
             {!isMobile && (
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                {[0, 1, 2, 3, 4].map((j) => (
+                {[0, 1, 2, 3, 4, 5].map((j) => (
                   <div
                     key={j}
                     style={{
@@ -769,6 +779,7 @@ export default function ScrollStory() {
             SECTION 1 — ENCEINTE AETHER
         ════════════════════════════════════════════════════════════════════ */}
         <section
+          id="produit"
           className="ss-panel"
           style={{
             minHeight: '100vh',
@@ -881,6 +892,7 @@ export default function ScrollStory() {
             SECTION 2 — APP BETALYSIUM (textSide: right)
         ════════════════════════════════════════════════════════════════════ */}
         <section
+          id="app"
           className="ss-panel"
           style={{
             minHeight: '100vh',
@@ -1081,6 +1093,7 @@ export default function ScrollStory() {
             SECTION 3 — CAS D'USAGE (textSide: left)
         ════════════════════════════════════════════════════════════════════ */}
         <section
+          id="cas-usage"
           className="ss-panel"
           style={{
             minHeight: '100vh',
@@ -1225,6 +1238,7 @@ export default function ScrollStory() {
             SECTION 4 — CTA / PRICING (textSide: center)
         ════════════════════════════════════════════════════════════════════ */}
         <section
+          id="abonnement"
           className="ss-panel"
           style={{
             minHeight: isMobile ? '100vh' : '130vh',
@@ -1252,7 +1266,6 @@ export default function ScrollStory() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              /* paddingTop pousse le titre sous la zone du cône */
               paddingTop: isMobile ? '2rem' : 'clamp(38vh, 42vh, 46vh)',
               paddingLeft: 'clamp(1.5rem, 6vw, 5rem)',
               paddingRight: 'clamp(1.5rem, 6vw, 5rem)',
@@ -1388,8 +1401,8 @@ export default function ScrollStory() {
                     ))}
                   </ul>
 
-                  <Link
-                    href="/abonnement"
+                  <a
+                    href="#contact"
                     style={{
                       padding: '0.75rem 1.2rem',
                       borderRadius: '9999px',
@@ -1400,6 +1413,7 @@ export default function ScrollStory() {
                       fontFamily: 'var(--font-dm-sans)',
                       transition: 'transform 0.2s, box-shadow 0.2s',
                       display: 'block',
+                      cursor: 'pointer',
                       ...(card.highlight
                         ? { background: '#C4622D', color: '#FAF7F2' }
                         : {
@@ -1408,6 +1422,7 @@ export default function ScrollStory() {
                             background: 'transparent',
                           }),
                     }}
+                    onClick={(e) => { e.preventDefault(); smoothScrollTo('contact') }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-2px)'
                       if (card.highlight) {
@@ -1420,17 +1435,18 @@ export default function ScrollStory() {
                     }}
                   >
                     {card.cta}
-                  </Link>
+                  </a>
                 </div>
               ))}
             </div>
 
             {/* Final CTA row */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
-              <Link
-                href="/abonnement"
+              <a
+                href="#contact"
                 className="ss-cta"
                 style={btnPrimary}
+                onClick={(e) => { e.preventDefault(); smoothScrollTo('contact') }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)'
                   e.currentTarget.style.boxShadow = '0 8px 28px rgba(196,98,45,0.5)'
@@ -1441,11 +1457,12 @@ export default function ScrollStory() {
                 }}
               >
                 Commencer gratuitement
-              </Link>
-              <Link
-                href="/contact"
+              </a>
+              <a
+                href="#contact"
                 className="ss-cta"
                 style={btnGhost}
+                onClick={(e) => { e.preventDefault(); smoothScrollTo('contact') }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)'
                   e.currentTarget.style.borderColor = 'rgba(196,98,45,0.7)'
@@ -1456,7 +1473,375 @@ export default function ScrollStory() {
                 }}
               >
                 Nous contacter
-              </Link>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════════════════
+            SECTION 5 — CONTACT
+        ════════════════════════════════════════════════════════════════════ */}
+        <section
+          id="contact"
+          className="ss-panel"
+          style={{
+            minHeight: '100vh',
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            alignItems: 'center',
+            position: 'relative',
+            background: 'rgba(22,18,14,0.97)',
+          }}
+        >
+          <div
+            className="ss-content"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              padding: isMobile
+                ? '6rem 1.5rem 3rem'
+                : 'clamp(5rem, 8vh, 7rem) clamp(2rem, 8vw, 8rem) clamp(3rem, 6vh, 5rem)',
+              textAlign: 'center',
+            }}
+          >
+            {renderTag('Contact')}
+
+            {renderWordTitle(
+              ['Parlons de votre', 'Elysium.'],
+              ['Elysium.'],
+              isMobile ? 'clamp(1.7rem, 5.5vw, 2.5rem)' : 'clamp(2.2rem, 3.8vw, 3.5rem)'
+            )}
+
+            <p
+              className="ss-body"
+              style={{
+                fontSize: isMobile ? '0.90rem' : '1.05rem',
+                lineHeight: 1.78,
+                color: 'rgba(250,247,242,0.60)',
+                marginBottom: '3rem',
+                maxWidth: '52ch',
+                fontFamily: 'var(--font-dm-sans)',
+              }}
+            >
+              Une question, une suggestion, ou envie de collaborer ?
+              Notre équipe est là pour vous répondre.
+            </p>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: isMobile ? '1fr' : '1fr 1.6fr',
+                gap: '2rem',
+                width: '100%',
+                maxWidth: '900px',
+                textAlign: 'left',
+              }}
+            >
+              {/* Left: contact info */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {/* Email */}
+                <div
+                  className="ss-item"
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}
+                >
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '10px',
+                      background: 'rgba(196,98,45,0.12)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#C4622D" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#FAF7F2', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.2rem' }}>
+                      Email
+                    </p>
+                    <a
+                      href="mailto:contact@nslysium.com"
+                      style={{ fontSize: '0.85rem', color: '#7A6A58', fontFamily: 'var(--font-dm-sans)', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#FAF7F2')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#7A6A58')}
+                    >
+                      contact@nslysium.com
+                    </a>
+                  </div>
+                </div>
+
+                {/* Instagram */}
+                <div
+                  className="ss-item"
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}
+                >
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '10px',
+                      background: 'rgba(196,98,45,0.12)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" fill="#C4622D" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#FAF7F2', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.2rem' }}>
+                      Instagram
+                    </p>
+                    <a
+                      href="https://instagram.com/nslysium"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: '0.85rem', color: '#7A6A58', fontFamily: 'var(--font-dm-sans)', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#FAF7F2')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#7A6A58')}
+                    >
+                      @nslysium
+                    </a>
+                  </div>
+                </div>
+
+                {/* LinkedIn */}
+                <div
+                  className="ss-item"
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}
+                >
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '10px',
+                      background: 'rgba(196,98,45,0.12)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" fill="#C4622D" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#FAF7F2', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.2rem' }}>
+                      LinkedIn
+                    </p>
+                    <a
+                      href="https://linkedin.com/company/nslysium"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: '0.85rem', color: '#7A6A58', fontFamily: 'var(--font-dm-sans)', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#FAF7F2')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#7A6A58')}
+                    >
+                      NSLysium
+                    </a>
+                  </div>
+                </div>
+
+                {/* Response time */}
+                <div
+                  className="ss-item"
+                  style={{
+                    padding: '1rem 1.25rem',
+                    borderRadius: '0.75rem',
+                    background: '#221E18',
+                    border: '1px solid rgba(196,98,45,0.12)',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  <p style={{ fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#C4622D', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.5rem' }}>
+                    Temps de réponse
+                  </p>
+                  <p style={{ fontSize: '0.82rem', color: 'rgba(250,247,242,0.65)', fontFamily: 'var(--font-dm-sans)', lineHeight: 1.6 }}>
+                    Toutes les demandes sous{' '}
+                    <strong style={{ color: '#FAF7F2' }}>48h ouvrées</strong>.
+                    Abonnés Pro :{' '}
+                    <strong style={{ color: '#FAF7F2' }}>4h</strong>.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right: contact form */}
+              <div
+                className="ss-item"
+                style={{
+                  padding: '2rem',
+                  borderRadius: '1.25rem',
+                  background: '#221E18',
+                  border: '1px solid rgba(196,98,45,0.15)',
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: '1.1rem',
+                    fontWeight: 300,
+                    color: '#FAF7F2',
+                    fontFamily: 'var(--font-fraunces)',
+                    marginBottom: '1.5rem',
+                  }}
+                >
+                  Envoyer un message
+                </h3>
+                <form
+                  action="mailto:contact@nslysium.com"
+                  method="post"
+                  encType="text/plain"
+                  style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                >
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '0.75rem' }}>
+                    <div>
+                      <label
+                        htmlFor="contact-name"
+                        style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, color: 'rgba(250,247,242,0.7)', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.4rem' }}
+                      >
+                        Nom
+                      </label>
+                      <input
+                        id="contact-name"
+                        name="name"
+                        type="text"
+                        required
+                        placeholder="Votre nom"
+                        style={{
+                          width: '100%',
+                          padding: '0.7rem 1rem',
+                          borderRadius: '0.65rem',
+                          background: '#16120E',
+                          border: '1px solid rgba(196,98,45,0.2)',
+                          color: '#FAF7F2',
+                          fontSize: '0.85rem',
+                          fontFamily: 'var(--font-dm-sans)',
+                          outline: 'none',
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="contact-email"
+                        style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, color: 'rgba(250,247,242,0.7)', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.4rem' }}
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="contact-email"
+                        name="email"
+                        type="email"
+                        required
+                        placeholder="votre@email.com"
+                        style={{
+                          width: '100%',
+                          padding: '0.7rem 1rem',
+                          borderRadius: '0.65rem',
+                          background: '#16120E',
+                          border: '1px solid rgba(196,98,45,0.2)',
+                          color: '#FAF7F2',
+                          fontSize: '0.85rem',
+                          fontFamily: 'var(--font-dm-sans)',
+                          outline: 'none',
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contact-subject"
+                      style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, color: 'rgba(250,247,242,0.7)', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.4rem' }}
+                    >
+                      Sujet
+                    </label>
+                    <select
+                      id="contact-subject"
+                      name="subject"
+                      style={{
+                        width: '100%',
+                        padding: '0.7rem 1rem',
+                        borderRadius: '0.65rem',
+                        background: '#16120E',
+                        border: '1px solid rgba(196,98,45,0.2)',
+                        color: '#FAF7F2',
+                        fontSize: '0.85rem',
+                        fontFamily: 'var(--font-dm-sans)',
+                        outline: 'none',
+                        appearance: 'none',
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <option value="">Choisir un sujet</option>
+                      <option value="produit">Question produit</option>
+                      <option value="abonnement">Abonnement</option>
+                      <option value="partenariat">Partenariat</option>
+                      <option value="presse">Presse</option>
+                      <option value="autre">Autre</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contact-message"
+                      style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, color: 'rgba(250,247,242,0.7)', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.4rem' }}
+                    >
+                      Message
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      required
+                      rows={5}
+                      placeholder="Votre message..."
+                      style={{
+                        width: '100%',
+                        padding: '0.7rem 1rem',
+                        borderRadius: '0.65rem',
+                        background: '#16120E',
+                        border: '1px solid rgba(196,98,45,0.2)',
+                        color: '#FAF7F2',
+                        fontSize: '0.85rem',
+                        fontFamily: 'var(--font-dm-sans)',
+                        outline: 'none',
+                        resize: 'none',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    style={{
+                      ...btnPrimary,
+                      width: '100%',
+                      padding: '0.9rem 1.5rem',
+                      textAlign: 'center',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-1px)'
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(196,98,45,0.4)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = ''
+                      e.currentTarget.style.boxShadow = ''
+                    }}
+                  >
+                    Envoyer le message
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </section>
