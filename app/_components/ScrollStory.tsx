@@ -15,7 +15,6 @@ interface ChatBubble { icon: string; category: string; categoryColor: string; co
 interface PricingCard { tier: string; price: string; period?: string; highlight: boolean; badge?: string; features: string[]; cta: string }
 interface AetherColoris { name: string; hex: string; border: string; description: string; context: string; packaging: string }
 interface WearableCard { icon: string; brand: string; detail: string; metrics: string[] }
-interface MarketStat { value: string; label: string; source: string }
 
 // ─── Données statiques ─────────────────────────────────────────────────────
 
@@ -23,12 +22,6 @@ const ECOSYSTEM_STEPS: EcosystemStep[] = [
   { icon: '⌚', label: 'Connecte ta montre', sub: 'Apple Watch · Garmin · Samsung · Fitbit · Whoop · Withings · Polar · Suunto' },
   { icon: '🎙', label: 'Parle à Aether', sub: 'IA locale · 3 micros beamforming · portée 5m · latence <80ms' },
   { icon: '📊', label: 'Visualise tout', sub: 'Sport · Nutrition · Sommeil · Agenda · 45+ activités' },
-]
-
-const MARKET_STATS: MarketStat[] = [
-  { value: '995 Mrd $', label: 'marché santé numérique d\'ici 2032', source: '+22,2 %/an' },
-  { value: '30 %', label: 'des Français ont une enceinte connectée', source: 'Étude 2024' },
-  { value: '78 %', label: 'des Européens : confidentialité = critère n°1', source: 'RGPD Report' },
 ]
 
 const AETHER_COLORIS: AetherColoris[] = [
@@ -122,14 +115,6 @@ const PRICING_CARDS: PricingCard[] = [
     ],
     cta: 'Découvrir Pro',
   },
-]
-
-const BRAND_VALUES = [
-  { icon: '✦', label: 'Simplicité', desc: 'Zéro saisie, zéro friction' },
-  { icon: '◎', label: 'Harmonie', desc: 'Corps, esprit, agenda unifiés' },
-  { icon: '🔒', label: 'Confiance', desc: 'IA locale, données chez vous' },
-  { icon: '⚡', label: 'Excellence', desc: 'Standards Apple / Tesla' },
-  { icon: '☽', label: 'Sérénité', desc: 'Votre Elysium numérique' },
 ]
 
 // ─── App Store Badges ───────────────────────────────────────────────────────
@@ -398,17 +383,6 @@ export default function ScrollStory() {
                 &ldquo;Libérez votre esprit de la logistique santé.&rdquo;
               </em>
             </p>
-
-            {/* ── Données marché ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '0.5rem', marginBottom: '1.5rem' }}>
-              {MARKET_STATS.map((stat, si) => (
-                <div key={si} className="ss-item" style={{ padding: '0.75rem 0.9rem', borderRadius: '0.65rem', background: 'rgba(196,98,45,0.04)', border: '1px solid rgba(196,98,45,0.1)', textAlign: 'left' }}>
-                  <span style={{ display: 'block', fontSize: '1rem', fontWeight: 700, color: '#C4622D', fontFamily: 'var(--font-fraunces)', lineHeight: 1.1, marginBottom: '0.25rem' }}>{stat.value}</span>
-                  <span style={{ display: 'block', fontSize: '0.6rem', color: 'rgba(250,247,242,0.5)', fontFamily: 'var(--font-dm-sans)', lineHeight: 1.4, marginBottom: '0.15rem' }}>{stat.label}</span>
-                  <span style={{ display: 'block', fontSize: '0.55rem', color: '#C4622D', fontFamily: 'var(--font-dm-sans)', opacity: 0.6, letterSpacing: '0.06em' }}>{stat.source}</span>
-                </div>
-              ))}
-            </div>
 
             {/* ── App Store badges ── */}
             <div className="ss-cta" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: isMobile ? 'center' : 'flex-start', marginBottom: '0.85rem' }}>
@@ -688,33 +662,6 @@ export default function ScrollStory() {
               ))}
             </div>
 
-            {/* Valeurs de marque */}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2rem', maxWidth: '700px', width: '100%' }}>
-              {BRAND_VALUES.map((v, vi) => (
-                <div key={vi} className="ss-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.55rem 0.9rem', borderRadius: '9999px', background: 'rgba(196,98,45,0.05)', border: '1px solid rgba(196,98,45,0.12)' }}>
-                  <span style={{ fontSize: '0.85rem' }}>{v.icon}</span>
-                  <div>
-                    <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#FAF7F2', fontFamily: 'var(--font-dm-sans)', lineHeight: 1 }}>{v.label}</span>
-                    <span style={{ display: 'block', fontSize: '0.58rem', color: 'rgba(250,247,242,0.35)', fontFamily: 'var(--font-dm-sans)' }}>{v.desc}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* ROI / social proof */}
-            <div className="ss-item" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', padding: '0.9rem 1.5rem', borderRadius: '0.85rem', background: 'rgba(196,98,45,0.05)', border: '1px solid rgba(196,98,45,0.1)', marginBottom: '2rem' }}>
-              {[
-                { v: '+470%', l: 'ROI santé B2B (Deloitte)' },
-                { v: '+24%', l: 'rétention via sync vocale quotidienne' },
-                { v: '88%', l: 'rétention après 18 mois (modèle Oura)' },
-              ].map(({ v, l }) => (
-                <div key={l} style={{ textAlign: 'center' }}>
-                  <span style={{ display: 'block', fontSize: '1.1rem', fontWeight: 700, color: '#C4622D', fontFamily: 'var(--font-fraunces)' }}>{v}</span>
-                  <span style={{ display: 'block', fontSize: '0.62rem', color: 'rgba(250,247,242,0.45)', fontFamily: 'var(--font-dm-sans)', maxWidth: '120px' }}>{l}</span>
-                </div>
-              ))}
-            </div>
-
             {/* CTA final — App Store badges */}
             <div className="ss-cta" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center', marginBottom: '0.75rem' }}>
               <AppBadge type="ios" />
@@ -759,24 +706,6 @@ export default function ScrollStory() {
                     </div>
                   </div>
                 ))}
-
-                {/* Cibles */}
-                <div className="ss-item" style={{ padding: '1rem 1.25rem', borderRadius: '0.75rem', background: '#221E18', border: '1px solid rgba(196,98,45,0.12)' }}>
-                  <p style={{ fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#C4622D', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.6rem' }}>Notre cœur de cible</p>
-                  {[
-                    { emoji: '⚡', name: 'L\'Optimisateur', desc: '25-45 ans · CSP+ · performance' },
-                    { emoji: '🌿', name: 'L\'Esthète Holistique', desc: '35-50 ans · bien-être · design' },
-                    { emoji: '🛡', name: 'Le Senior Préventif', desc: '55-70 ans · santé · simplicité' },
-                  ].map(({ emoji, name, desc }) => (
-                    <div key={name} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.45rem', alignItems: 'flex-start' }}>
-                      <span style={{ fontSize: '0.8rem', flexShrink: 0, marginTop: '0.05rem' }}>{emoji}</span>
-                      <div>
-                        <span style={{ display: 'block', fontSize: '0.72rem', fontWeight: 600, color: '#FAF7F2', fontFamily: 'var(--font-dm-sans)' }}>{name}</span>
-                        <span style={{ fontSize: '0.62rem', color: 'rgba(250,247,242,0.4)', fontFamily: 'var(--font-dm-sans)' }}>{desc}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
 
                 <div className="ss-item" style={{ padding: '1rem 1.25rem', borderRadius: '0.75rem', background: '#221E18', border: '1px solid rgba(196,98,45,0.12)' }}>
                   <p style={{ fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#C4622D', fontFamily: 'var(--font-dm-sans)', marginBottom: '0.5rem' }}>Temps de réponse</p>
