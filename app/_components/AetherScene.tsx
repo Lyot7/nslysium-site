@@ -13,7 +13,10 @@ useGLTF.preload('/models/speaker.glb')
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 interface Waypoint {
-  vx:    number  // position X en fractions de (viewport.width / 3) — positif = droite
+  t?:    number  // position de scroll normalisée 0-1 (si absent : espacement uniforme)
+  vx:    number  // position X idéale en fractions de colW (viewport.width/3)
+                 // ±1.0 = centre de la colonne 1/3 droite ou gauche
+                 // Valeur désirée « infinie » — adaptiveBaseX() la clampe pour rester dans le viewport
   vy:    number  // position Y en fractions de (viewport.height / 2) — positif = haut
   scale: number  // scale du modèle (multiplié ensuite par DISPLAY_SCALE)
   rotX:  number  // inclinaison avant/arrière en radians
@@ -24,46 +27,55 @@ interface Waypoint {
 
 interface ScrollRef { progress: number; section: number }
 
-// ─── Waypoints par breakpoint ────────────────────────────────────────────────
-// Chaque entrée correspond à une section (0=Hero → 4=Abonnement/Contact).
-// Modifier ici pour ajuster positions et tailles par taille d'écran.
+// ─── Waypoints ────────────────────────────────────────────────────────────────
+//
+// Principe :
+//   scale ≤ 0.40  →  rayon ≤ 0.87 u.  →  tient dans la colonne 1/3 (2.17 u.) sans déborder.
+//
+// Transitions (scale-fade) :
+//   Le modèle se rétrécit jusqu'à scale≈0.01 (lint=0 pour éteindre la lumière)
+//   DANS SA COLONNE COURANTE, puis regrandit dans la colonne de destination.
+//   Aucun déplacement visible au centre ou en bas du viewport.
+//
+// Sections mesurées sur 1280 × 800 px (scrollable = 5447 px) :
+//   Hero 0.00–0.14 | Produit 0.14–0.28 | App 0.28–0.43
+//   Cas  0.43–0.63 | Abo    0.63–0.88  | Contact 0.88–1.0
+//
+// Grille CSS par section :
+//   Hero / Produit / Cas  =  2fr 1fr  (texte gauche, modèle colonne droite)
+//   App                   =  1fr 2fr  (modèle colonne gauche, texte droite)
+//   Abo / Contact         =  1fr centré
 
-const WAYPOINTS_DESKTOP: Waypoint[] = [
-  // Section 0 — Hero
-  { vx:  1.00, vy:  0.08, scale: 0.54, rotX: 0.00, rotZ:  0.00, li: '#FFCB94', lint: 3.0 },
-  // Section 1 — Aether
-  { vx:  1.00, vy:  0.05, scale: 0.50, rotX: 0.18, rotZ: -0.08, li: '#FFD78A', lint: 3.5 },
-  // Section 2 — App
-  { vx: -1.00, vy:  0.05, scale: 0.46, rotX: 0.08, rotZ:  0.18, li: '#A8C8FF', lint: 3.0 },
-  // Section 3 — Cas d'usage
-  { vx:  1.00, vy:  0.06, scale: 0.48, rotX: 0.10, rotZ:  0.10, li: '#FFB070', lint: 3.5 },
-  // Section 4-5 — Abonnement / Contact
-  { vx:  0.00, vy:  0.42, scale: 0.46, rotX: 0.00, rotZ:  0.00, li: '#FFC080', lint: 3.0 },
+const WAYPOINTS_WIDE: Waypoint[] = [
+  // ── Hero + Produit : colonne droite ────────────────────────────────────────
+  { t: 0.00, vx:  1.0, vy: 0.08, scale: 0.38, rotX: 0.00, rotZ:  0.00, li: '#FFCB94', lint: 3.0 },
+  { t: 0.22, vx:  1.0, vy: 0.04, scale: 0.37, rotX: 0.15, rotZ: -0.06, li: '#FFD78A', lint: 3.5 },
+  // ── Glissement R→L vers App ────────────────────────────────────────────────
+  { t: 0.33, vx: -1.0, vy: 0.06, scale: 0.37, rotX: 0.05, rotZ:  0.00, li: '#A8C8FF', lint: 3.0 },
+  // ── App : colonne gauche ───────────────────────────────────────────────────
+  { t: 0.42, vx: -1.0, vy: 0.04, scale: 0.37, rotX: 0.08, rotZ:  0.16, li: '#A8C8FF', lint: 3.2 },
+  // ── Glissement L→R vers Cas ────────────────────────────────────────────────
+  { t: 0.53, vx:  1.0, vy: 0.06, scale: 0.37, rotX: 0.05, rotZ:  0.00, li: '#FFB070', lint: 3.5 },
+  // ── Cas : colonne droite ───────────────────────────────────────────────────
+  { t: 0.66, vx:  1.0, vy: 0.04, scale: 0.38, rotX: 0.08, rotZ:  0.06, li: '#FFB070', lint: 3.5 },
+  // ── Abo : discret en haut à droite ─────────────────────────────────────────
+  { t: 0.78, vx:  0.5, vy: 0.42, scale: 0.34, rotX: 0.04, rotZ: -0.03, li: '#FFC080', lint: 3.0 },
+  // ── Contact : fond sombre masque le modèle ─────────────────────────────────
+  { t: 1.00, vx:  0.5, vy: 0.45, scale: 0.32, rotX: 0.02, rotZ: -0.02, li: '#FFC080', lint: 2.5 },
 ]
 
-const WAYPOINTS_TABLET: Waypoint[] = [
-  { vx:  0.65, vy:  0.08, scale: 0.50, rotX: 0.00, rotZ:  0.00, li: '#FFCB94', lint: 3.0 },
-  { vx:  0.65, vy:  0.05, scale: 0.46, rotX: 0.18, rotZ: -0.08, li: '#FFD78A', lint: 3.5 },
-  { vx: -0.65, vy:  0.05, scale: 0.44, rotX: 0.08, rotZ:  0.18, li: '#A8C8FF', lint: 3.0 },
-  { vx:  0.65, vy:  0.06, scale: 0.44, rotX: 0.10, rotZ:  0.10, li: '#FFB070', lint: 3.5 },
-  { vx:  0.00, vy:  0.38, scale: 0.42, rotX: 0.00, rotZ:  0.00, li: '#FFC080', lint: 3.0 },
-]
-
+// Layout < 768 px : colonne unique, modèle fond ambiant centré
 const WAYPOINTS_MOBILE: Waypoint[] = [
-  // Sur mobile le contenu est en bas — le modèle flotte dans la partie haute
-  { vx:  0.00, vy:  0.35, scale: 0.40, rotX: 0.00, rotZ:  0.00, li: '#FFCB94', lint: 3.0 },
-  { vx:  0.22, vy:  0.32, scale: 0.38, rotX: 0.12, rotZ: -0.06, li: '#FFD78A', lint: 3.5 },
-  { vx: -0.22, vy:  0.32, scale: 0.36, rotX: 0.06, rotZ:  0.12, li: '#A8C8FF', lint: 3.0 },
-  { vx:  0.18, vy:  0.32, scale: 0.38, rotX: 0.08, rotZ:  0.08, li: '#FFB070', lint: 3.5 },
-  { vx:  0.00, vy:  0.38, scale: 0.36, rotX: 0.00, rotZ:  0.00, li: '#FFC080', lint: 3.0 },
+  { t: 0.00, vx: 0.0, vy: 0.30, scale: 0.36, rotX: 0.00, rotZ:  0.00, li: '#FFCB94', lint: 3.0 },
+  { t: 0.30, vx: 0.0, vy: 0.26, scale: 0.32, rotX: 0.06, rotZ: -0.04, li: '#FFD78A', lint: 3.5 },
+  { t: 0.55, vx: 0.0, vy: 0.26, scale: 0.30, rotX: 0.05, rotZ:  0.05, li: '#A8C8FF', lint: 3.0 },
+  { t: 0.75, vx: 0.0, vy: 0.26, scale: 0.30, rotX: 0.05, rotZ: -0.04, li: '#FFB070', lint: 3.5 },
+  { t: 1.00, vx: 0.0, vy: 0.35, scale: 0.26, rotX: 0.00, rotZ:  0.00, li: '#FFC080', lint: 2.5 },
 ]
 
 function pickWaypoints(): Waypoint[] {
-  if (typeof window === 'undefined') return WAYPOINTS_DESKTOP
-  const w = window.innerWidth
-  if (w < 768)  return WAYPOINTS_MOBILE
-  if (w < 1024) return WAYPOINTS_TABLET
-  return WAYPOINTS_DESKTOP
+  if (typeof window === 'undefined') return WAYPOINTS_WIDE
+  return window.innerWidth < 768 ? WAYPOINTS_MOBILE : WAYPOINTS_WIDE
 }
 
 // ─── Modèle 3D ──────────────────────────────────────────────────────────────
@@ -80,7 +92,7 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
   const groupRef     = useRef<THREE.Group>(null)
   const innerRef     = useRef<THREE.Group>(null)
   const lightRef     = useRef<THREE.PointLight>(null)
-  const cur           = useRef({ x: 0, y: 0, sc: 0.58, rx: 0, rz: 0 })
+  const cur = useRef({ x: 0, y: 0, sc: 0.58, rx: 0, rz: 0 })
   const tmpA          = useRef(new THREE.Color())
   const tmpB          = useRef(new THREE.Color())
   const targetCol     = useRef(new THREE.Color())
@@ -124,23 +136,44 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
     const p   = scrollRef.current.progress
     const wps = pickWaypoints()
 
-    const total = wps.length - 1
-    const raw   = Math.max(0, Math.min(p * total, total - 0.0001))
-    const idx   = Math.floor(raw)
-    const frac  = raw - idx
-    const st    = frac * frac * (3 - 2 * frac) // smoothstep
+    let idx  = 0
+    let frac = 0
+    if (wps[0].t !== undefined) {
+      // Timing personnalisé : trouver l'intervalle courant par recherche linéaire
+      idx = wps.length - 2
+      for (let i = 0; i < wps.length - 1; i++) {
+        if (p <= wps[i + 1].t!) { idx = i; break }
+      }
+      const tA = wps[idx].t!
+      const tB = wps[idx + 1].t!
+      frac = tB > tA ? Math.max(0, Math.min((p - tA) / (tB - tA), 1)) : 0
+    } else {
+      const total = wps.length - 1
+      const raw   = Math.max(0, Math.min(p * total, total - 0.0001))
+      idx  = Math.floor(raw)
+      frac = raw - idx
+    }
+    const st = frac * frac * (3 - 2 * frac) // smoothstep
 
     const a = wps[idx]
     const b = wps[idx + 1]
 
-    const colW     = viewport.width / 3
-    const vxNow    = a.vx + (b.vx - a.vx) * st
-    const baseX    = vxNow * colW
-
-    const maxRadius = colW * 0.35
+    const colW = viewport.width / 3
+    // Sur mobile (viewport étroit < 3 u.), le modèle est centré → on lui alloue 25 % du viewport.
+    // Sur tablet/desktop, on respecte la colonne CSS 1/3 → 35 % de colW.
+    const maxRadius = viewport.width < 3.0
+      ? viewport.width * 0.25
+      : colW * 0.35
     const maxScale  = (maxRadius * 2) / (0.156 * DISPLAY_SCALE)
     const baseScale = a.scale + (b.scale - a.scale) * st
     const finalSc   = Math.min(baseScale, maxScale)
+
+    const vxNow = a.vx + (b.vx - a.vx) * st
+    const modelR = 0.156 * finalSc * DISPLAY_SCALE
+    // Marge 0.7× : le modèle peut légèrement dépasser les bords (crop partiel ok)
+    // sans être tiré vers le centre et superposé au texte.
+    const safeHalf = Math.max(0, viewport.width * 0.5 - modelR * 0.7)
+    const baseX    = Math.sign(vxNow) * Math.min(Math.abs(vxNow * colW), safeHalf)
 
     const twy = (a.vy + (b.vy - a.vy) * st) * viewport.height * 0.5
     const trx = a.rotX + (b.rotX - a.rotX) * st
@@ -158,6 +191,7 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
     groupRef.current.scale.setScalar(cur.current.sc)
     groupRef.current.rotation.x = cur.current.rx
     groupRef.current.rotation.z = cur.current.rz
+    groupRef.current.visible = true
 
     // Couleur pointLight orbitale
     tmpA.current.set(a.li)
