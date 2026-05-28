@@ -219,24 +219,50 @@ export default function ProductHero3D() {
                 <span
                   aria-hidden
                   style={{
-                    display: 'block',
-                    width: isActive ? '40px' : '30px',
-                    height: isActive ? '40px' : '30px',
+                    position: 'relative',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: isActive ? '38px' : '28px',
+                    height: isActive ? '38px' : '28px',
                     borderRadius: '50%',
                     background: c.hex,
                     border: isActive
-                      ? '2px solid rgba(250, 247, 242, 0.95)'
+                      ? '2px solid #FAF7F2'
                       : '1px solid rgba(250, 247, 242, 0.18)',
                     outline: isActive
-                      ? '2px solid rgba(181, 158, 125, 0.45)'
+                      ? '2px solid #C9B395'
                       : 'none',
-                    outlineOffset: '3px',
+                    outlineOffset: '4px',
                     transition: 'all 0.25s ease',
                     boxShadow: isActive
                       ? `0 6px 18px ${c.hex}66`
                       : '0 2px 6px rgba(0, 0, 0, 0.2)',
                   }}
-                />
+                >
+                  {isActive && (
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      aria-hidden
+                      style={{
+                        // Check sur fond color : couleur cream avec ombre pour
+                        // contraste sur tout le spectre des coloris cône.
+                        filter: 'drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4))',
+                      }}
+                    >
+                      <path
+                        d="M3 7L6 10L11 4"
+                        stroke="#FAF7F2"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </span>
               </button>
             )
           })}

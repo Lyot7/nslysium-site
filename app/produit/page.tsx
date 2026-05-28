@@ -14,29 +14,79 @@ export const metadata: Metadata = {
 const AETHER_BENEFITS = [
   {
     tag: 'Voix',
+    icon: 'mic',
     title: 'Vous parlez naturellement.',
     body:
       "Trois micros directionnels captent votre voix jusqu'à cinq mètres, même en mouvement ou avec du bruit de fond.",
   },
   {
     tag: 'IA locale',
+    icon: 'lock',
     title: 'Vos données restent chez vous.',
     body:
       "Aether traite tout sur l'appareil. Aucun cloud obligatoire, aucune écoute extérieure. Chiffrement de bout en bout.",
   },
   {
     tag: 'Présence',
+    icon: 'leaf',
     title: 'Il vit dans votre intérieur.',
     body:
-      "Pas d'écran, pas d'interruption. Aether se fait oublier — jusqu'à ce que vous ayez besoin de lui.",
+      "Pas d'écran, pas d'interruption. Aether se fait oublier, jusqu'à ce que vous ayez besoin de lui.",
   },
   {
     tag: 'Robustesse',
+    icon: 'shield',
     title: "Conçu pour durer.",
     body:
       "Bois massif FSC, biocomposites minéraux. Résistant aux projections, huit heures d'autonomie, charge rapide.",
   },
-]
+] as const
+
+// Mini-icons SVG outline khaki — 22px, stroke 1.5, opacity 0.75
+function BenefitIcon({ kind }: { kind: 'mic' | 'lock' | 'leaf' | 'shield' }) {
+  const common = {
+    width: 22,
+    height: 22,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: '#B59E7D',
+    strokeWidth: 1.5,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    'aria-hidden': true,
+    style: { marginBottom: '0.85rem', opacity: 0.75 },
+  }
+  switch (kind) {
+    case 'mic':
+      return (
+        <svg {...common}>
+          <rect x="9" y="3" width="6" height="12" rx="3" />
+          <path d="M5 11C5 14.866 8.13401 18 12 18C15.866 18 19 14.866 19 11" />
+          <line x1="12" y1="18" x2="12" y2="22" />
+        </svg>
+      )
+    case 'lock':
+      return (
+        <svg {...common}>
+          <rect x="4" y="11" width="16" height="10" rx="2" />
+          <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" />
+        </svg>
+      )
+    case 'leaf':
+      return (
+        <svg {...common}>
+          <path d="M21 3C13 3 5 7 5 17C5 18.6569 6.34315 20 8 20H10C18 20 21 12 21 3Z" />
+          <line x1="5" y1="17" x2="14" y2="8" />
+        </svg>
+      )
+    case 'shield':
+      return (
+        <svg {...common}>
+          <path d="M12 3L5 6V12C5 16.5 8 19.8 12 21C16 19.8 19 16.5 19 12V6L12 3Z" />
+        </svg>
+      )
+  }
+}
 
 const APP_FEATURES = [
   {
@@ -207,12 +257,22 @@ export default function ProduitPage() {
             <div
               key={b.tag}
               style={{
-                padding: '1.25rem 1.35rem',
+                padding: '1.4rem 1.35rem',
                 borderRadius: '0.85rem',
                 background: 'rgba(34, 30, 24, 0.55)',
                 border: '1px solid rgba(181, 158, 125, 0.12)',
+                transition: 'border-color 0.3s ease, background 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.28)'
+                e.currentTarget.style.background = 'rgba(34, 30, 24, 0.78)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.12)'
+                e.currentTarget.style.background = 'rgba(34, 30, 24, 0.55)'
               }}
             >
+              <BenefitIcon kind={b.icon} />
               <div
                 style={{
                   fontSize: '0.58rem',
