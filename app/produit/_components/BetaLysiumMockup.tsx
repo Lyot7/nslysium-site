@@ -251,10 +251,19 @@ export default function BetaLysiumMockup() {
             width: '34px',
             height: '34px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #B59E7D, #C9B395)',
+            background: '#B59E7D',
             border: '1px solid rgba(250, 247, 242, 0.12)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#FAF7F2',
+            fontFamily: 'var(--font-fraunces)',
+            fontSize: '0.95rem',
+            fontWeight: 400,
           }}
-        />
+        >
+          S
+        </div>
       </div>
 
       {/* Ring chart concentrique + score central */}
@@ -525,7 +534,7 @@ export default function BetaLysiumMockup() {
           width: '42px',
           height: '42px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #B59E7D, #C9B395)',
+          background: '#B59E7D',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

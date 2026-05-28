@@ -272,7 +272,20 @@ export default function AbonnementPage() {
             alignItems: 'stretch',
           }}
         >
-          {TIERS.map((tier) => (
+          {TIERS.map((tier) => {
+            const baseBorder = tier.highlight
+              ? '1.5px solid rgba(181, 158, 125,0.55)'
+              : '1px solid rgba(181, 158, 125,0.13)'
+            const baseShadow = tier.highlight
+              ? '0 20px 60px rgba(181, 158, 125,0.2)'
+              : '0 10px 30px rgba(0,0,0,0.15)'
+            const hoverShadow = tier.highlight
+              ? '0 30px 80px rgba(181, 158, 125, 0.28)'
+              : '0 20px 50px rgba(0,0,0,0.28)'
+            const hoverBorder = tier.highlight
+              ? '1.5px solid rgba(181, 158, 125,0.75)'
+              : '1px solid rgba(181, 158, 125, 0.28)'
+            return (
             <div
               key={tier.id}
               style={{
@@ -282,14 +295,21 @@ export default function AbonnementPage() {
                 background: tier.highlight
                   ? 'linear-gradient(180deg, rgba(181, 158, 125,0.12), #2A241D)'
                   : '#2A241D',
-                border: tier.highlight
-                  ? '1.5px solid rgba(181, 158, 125,0.55)'
-                  : '1px solid rgba(181, 158, 125,0.13)',
+                border: baseBorder,
                 display: 'flex',
                 flexDirection: 'column',
-                boxShadow: tier.highlight
-                  ? '0 20px 60px rgba(181, 158, 125,0.2)'
-                  : '0 10px 30px rgba(0,0,0,0.15)',
+                boxShadow: baseShadow,
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)'
+                e.currentTarget.style.boxShadow = hoverShadow
+                e.currentTarget.style.border = hoverBorder
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = baseShadow
+                e.currentTarget.style.border = baseBorder
               }}
             >
               {tier.badge && (
@@ -461,7 +481,8 @@ export default function AbonnementPage() {
                 {tier.cta}
               </Link>
             </div>
-          ))}
+            )
+          })}
         </div>
 
         <p
@@ -600,12 +621,22 @@ export default function AbonnementPage() {
           {FAQ.map((f, i) => (
             <details
               key={i}
+              className="faq-card"
               style={{
                 padding: '1.25rem 1.5rem',
                 borderRadius: '0.85rem',
                 background: 'rgba(34,30,24,0.55)',
                 border: '1px solid rgba(181, 158, 125,0.13)',
                 cursor: 'pointer',
+                transition: 'border-color 0.3s ease, background 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.28)'
+                e.currentTarget.style.background = 'rgba(34,30,24,0.78)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.13)'
+                e.currentTarget.style.background = 'rgba(34,30,24,0.55)'
               }}
             >
               <summary
@@ -622,16 +653,27 @@ export default function AbonnementPage() {
                 }}
               >
                 <span>{f.q}</span>
-                <span
+                <svg
+                  className="faq-chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  aria-hidden
                   style={{
                     color: '#B59E7D',
-                    fontSize: '1.2rem',
                     flexShrink: 0,
-                    fontFamily: 'var(--font-dm-sans)',
+                    transition: 'transform 0.3s ease',
                   }}
                 >
-                  +
-                </span>
+                  <path
+                    d="M3 5L7 9L11 5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </summary>
               <p
                 style={{

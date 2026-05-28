@@ -161,6 +161,9 @@ body {
   100% { transform: translateY(300%); }
 }
 
+/* FAQ chevron rotate quand details ouvert */
+details[open] .faq-chevron { transform: rotate(180deg); }
+
 /* Scroll horizontal snapping */
 .snap-x { scroll-snap-type: x mandatory; }
 .snap-mandatory > * { scroll-snap-align: start; }

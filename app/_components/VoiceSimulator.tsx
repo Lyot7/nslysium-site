@@ -363,7 +363,25 @@ export default function VoiceSimulator() {
               }}
               aria-label={`Essayer la démo ${demo.tag}`}
             >
-              {demo.tag}
+              <span style={{ display: 'block' }}>{demo.tag}</span>
+              <span
+                style={{
+                  display: 'block',
+                  fontSize: '0.58rem',
+                  fontWeight: 400,
+                  letterSpacing: '0.01em',
+                  textTransform: 'none',
+                  color: isActive
+                    ? 'rgba(250, 247, 242, 0.7)'
+                    : 'rgba(250, 247, 242, 0.4)',
+                  marginTop: '0.35rem',
+                  fontStyle: 'italic',
+                  fontFamily: 'var(--font-fraunces)',
+                  lineHeight: 1.3,
+                }}
+              >
+                « {demo.prompt} »
+              </span>
             </button>
           )
         })}

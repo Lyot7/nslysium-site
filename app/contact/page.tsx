@@ -105,18 +105,30 @@ export default function ContactPage() {
               title: 'Email',
               value: 'support@nslysium.com',
               href: 'mailto:support@nslysium.com',
+              icon: (
+                <path d="M3 6L12 13L21 6M5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19Z" />
+              ),
             },
             {
               label: 'Téléphone',
               title: 'Lun-Ven, 9h-18h',
               value: '+33 1 23 45 67 89',
               href: 'tel:+33123456789',
+              icon: (
+                <path d="M5 4H9L11 9L8.5 10.5C9.57096 12.6715 11.3285 14.429 13.5 15.5L15 13L20 15V19C20 19.5304 19.7893 20.0391 19.4142 20.4142C19.0391 20.7893 18.5304 21 18 21C14.0993 20.763 10.4202 19.1065 7.65683 16.3432C4.8935 13.5798 3.23705 9.90074 3 6C3 5.46957 3.21071 4.96086 3.58579 4.58579C3.96086 4.21071 4.46957 4 5 4Z" />
+              ),
             },
             {
               label: 'Adresse',
               title: 'NSLysium SAS',
               value: 'Paris, France',
               href: null,
+              icon: (
+                <>
+                  <path d="M12 22S20 16 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 16 12 22 12 22Z" />
+                  <circle cx="12" cy="10" r="3" />
+                </>
+              ),
             },
           ].map((c) => (
             <div
@@ -126,8 +138,31 @@ export default function ContactPage() {
                 borderRadius: '1rem',
                 background: 'rgba(34,30,24,0.55)',
                 border: '1px solid rgba(181, 158, 125,0.13)',
+                transition: 'border-color 0.3s ease, transform 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.32)'
+                e.currentTarget.style.transform = 'translateY(-2px)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.13)'
+                e.currentTarget.style.transform = 'translateY(0)'
               }}
             >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#B59E7D"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+                style={{ marginBottom: '0.9rem', opacity: 0.75 }}
+              >
+                {c.icon}
+              </svg>
               <div
                 style={{
                   fontSize: '0.62rem',

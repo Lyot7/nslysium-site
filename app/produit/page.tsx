@@ -324,35 +324,68 @@ export default function ProduitPage() {
                 <div
                   key={f.title}
                   style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '1rem',
                     padding: '1rem 1.15rem',
                     borderRadius: '0.75rem',
                     background: 'rgba(34,30,24,0.55)',
                     border: '1px solid rgba(181, 158, 125,0.12)',
+                    transition: 'border-color 0.3s ease, background 0.3s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.28)'
+                    e.currentTarget.style.background = 'rgba(34,30,24,0.78)'
+                    const chev = e.currentTarget.querySelector('[data-chev]') as HTMLElement | null
+                    if (chev) chev.style.transform = 'translateX(3px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.12)'
+                    e.currentTarget.style.background = 'rgba(34,30,24,0.55)'
+                    const chev = e.currentTarget.querySelector('[data-chev]') as HTMLElement | null
+                    if (chev) chev.style.transform = 'translateX(0)'
                   }}
                 >
-                  <h3
+                  <div style={{ flex: 1 }}>
+                    <h3
+                      style={{
+                        fontFamily: 'var(--font-fraunces)',
+                        fontWeight: 400,
+                        fontSize: '1rem',
+                        color: '#FAF7F2',
+                        lineHeight: 1.3,
+                        marginBottom: '0.35rem',
+                      }}
+                    >
+                      {f.title}
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: '0.82rem',
+                        lineHeight: 1.6,
+                        color: 'rgba(250,247,242,0.55)',
+                        fontFamily: 'var(--font-dm-sans)',
+                        margin: 0,
+                      }}
+                    >
+                      {f.body}
+                    </p>
+                  </div>
+                  <span
+                    data-chev
+                    aria-hidden
                     style={{
-                      fontFamily: 'var(--font-fraunces)',
-                      fontWeight: 400,
-                      fontSize: '1rem',
-                      color: '#FAF7F2',
-                      lineHeight: 1.3,
-                      marginBottom: '0.35rem',
+                      color: '#8B7659',
+                      fontSize: '1.5rem',
+                      lineHeight: 1,
+                      opacity: 0.5,
+                      transition: 'transform 0.3s ease',
+                      marginTop: '-2px',
+                      flexShrink: 0,
                     }}
                   >
-                    {f.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: '0.82rem',
-                      lineHeight: 1.6,
-                      color: 'rgba(250,247,242,0.55)',
-                      fontFamily: 'var(--font-dm-sans)',
-                      margin: 0,
-                    }}
-                  >
-                    {f.body}
-                  </p>
+                    ›
+                  </span>
                 </div>
               ))}
             </div>
@@ -431,22 +464,19 @@ export default function ProduitPage() {
               display: 'flex',
               flexWrap: 'wrap',
               justifyContent: 'center',
-              gap: '0.5rem',
+              gap: '0.5rem 1.1rem',
+              fontSize: '0.88rem',
+              color: 'rgba(250,247,242,0.78)',
+              fontFamily: 'var(--font-dm-sans)',
             }}
           >
-            {WEARABLES.map((w) => (
-              <span
-                key={w}
-                style={{
-                  padding: '0.45rem 0.85rem',
-                  borderRadius: '9999px',
-                  background: 'rgba(181, 158, 125,0.08)',
-                  border: '1px solid rgba(181, 158, 125,0.18)',
-                  fontSize: '0.78rem',
-                  color: 'rgba(250,247,242,0.85)',
-                  fontFamily: 'var(--font-dm-sans)',
-                }}
-              >
+            {WEARABLES.map((w, i) => (
+              <span key={w} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                {i > 0 && (
+                  <span aria-hidden style={{ color: 'rgba(181, 158, 125, 0.45)', fontSize: '0.6rem' }}>
+                    ·
+                  </span>
+                )}
                 {w}
               </span>
             ))}
@@ -472,22 +502,19 @@ export default function ProduitPage() {
               display: 'flex',
               flexWrap: 'wrap',
               justifyContent: 'center',
-              gap: '0.5rem',
+              gap: '0.5rem 1.1rem',
+              fontSize: '0.88rem',
+              color: 'rgba(250,247,242,0.68)',
+              fontFamily: 'var(--font-dm-sans)',
             }}
           >
-            {SERVICES.map((s) => (
-              <span
-                key={s}
-                style={{
-                  padding: '0.45rem 0.85rem',
-                  borderRadius: '9999px',
-                  background: 'rgba(250,247,242,0.04)',
-                  border: '1px solid rgba(250,247,242,0.1)',
-                  fontSize: '0.78rem',
-                  color: 'rgba(250,247,242,0.7)',
-                  fontFamily: 'var(--font-dm-sans)',
-                }}
-              >
+            {SERVICES.map((s, i) => (
+              <span key={s} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                {i > 0 && (
+                  <span aria-hidden style={{ color: 'rgba(181, 158, 125, 0.45)', fontSize: '0.6rem' }}>
+                    ·
+                  </span>
+                )}
                 {s}
               </span>
             ))}
@@ -539,16 +566,43 @@ export default function ProduitPage() {
             gap: '1.25rem',
           }}
         >
-          {USE_CASES.map((u) => (
+          {USE_CASES.map((u, i) => (
             <div
               key={u.label}
               style={{
-                padding: '1.75rem',
+                position: 'relative',
+                padding: '2rem 1.75rem 1.75rem',
                 borderRadius: '1rem',
                 background: '#2A241D',
                 border: '1px solid rgba(181, 158, 125,0.13)',
+                transition: 'border-color 0.3s ease, transform 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.32)'
+                e.currentTarget.style.transform = 'translateY(-2px)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(181, 158, 125, 0.13)'
+                e.currentTarget.style.transform = 'translateY(0)'
               }}
             >
+              <span
+                aria-hidden
+                style={{
+                  position: 'absolute',
+                  top: '1rem',
+                  right: '1.4rem',
+                  fontFamily: 'var(--font-fraunces)',
+                  fontWeight: 300,
+                  fontSize: '2.6rem',
+                  lineHeight: 1,
+                  color: 'rgba(181, 158, 125, 0.18)',
+                  letterSpacing: '-0.02em',
+                  pointerEvents: 'none',
+                }}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
               <div
                 style={{
                   fontSize: '0.6rem',
