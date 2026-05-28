@@ -7,16 +7,18 @@ import { usePathname } from 'next/navigation'
 const STIFFNESS = 0.12
 const FRICTION = 0.82
 
-// Amplitude max du parallax des lignes (px) — la grille se décale autour de
-// son point de repos selon la position normalisée [-1, +1] de la souris.
-const GRID_PARALLAX = 28
+// Grille déformable façon "tissu élastique"
+const CELL_SIZE = 72         // px entre 2 lignes (matche l'ancienne version CSS)
+const CURVE_RADIUS = 320     // px : rayon d'influence du curseur
+const CURVE_STRENGTH = 42    // px : déplacement max d'un point
+const SAMPLE_SPACING = 36    // px entre 2 points de contrôle d'une ligne
 
 // Sur la home, la grille s'efface complètement pendant le hero (image salon
-// pleine page) pour éviter le quadrillage par-dessus la photo — pas pro.
+// pleine page) pour éviter le quadrillage par-dessus la photo.
 const HERO_FADE_END = 0.85
 
 export default function GridBackground() {
-  const ref = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const target = useRef({ x: 0, y: 0 })
   const current = useRef({ x: 0, y: 0 })
   const velocity = useRef({ x: 0, y: 0 })
@@ -38,83 +40,169 @@ export default function GridBackground() {
     return () => window.removeEventListener('mousemove', onMove)
   }, [])
 
-  // Boucle d'animation : spring follow + opacity selon scroll hero
+  // Boucle d'animation : Canvas 2D, grille déformée par champ de force radial
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-    // WCAG 2.3.3 : si l'utilisateur a demandé moins de mouvement, on fige
-    // la grille au centre et on saute la boucle RAF entière.
+    const isHome = pathname === '/'
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
+
+    // Resize canvas avec DPR adaptatif (cap 2 pour préserver perf)
+    let viewW = 0
+    let viewH = 0
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      viewW = window.innerWidth
+      viewH = window.innerHeight
+      canvas.width = viewW * dpr
+      canvas.height = viewH * dpr
+      canvas.style.width = `${viewW}px`
+      canvas.style.height = `${viewH}px`
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    }
+    resize()
+    window.addEventListener('resize', resize, { passive: true })
+
+    // Déplace un point selon la distance au curseur.
+    // Falloff smoothstep, push radial vers l'extérieur (effet "tissu repoussé").
+    const cursor = current.current
+    const displace = (x: number, y: number): [number, number] => {
+      const dx = x - cursor.x
+      const dy = y - cursor.y
+      const d2 = dx * dx + dy * dy
+      const r2 = CURVE_RADIUS * CURVE_RADIUS
+      if (d2 > r2) return [x, y]
+      const d = Math.sqrt(d2)
+      const t = 1 - d / CURVE_RADIUS
+      const eased = t * t * (3 - 2 * t) // smoothstep
+      const push = CURVE_STRENGTH * eased
+      if (d < 0.01) return [x, y]
+      return [x + (dx / d) * push, y + (dy / d) * push]
+    }
+
+    // Trace une ligne courbe à travers une série de points via quadratic curves.
+    const drawSmoothPath = (points: [number, number][]) => {
+      if (points.length < 2) return
+      ctx.beginPath()
+      ctx.moveTo(points[0][0], points[0][1])
+      for (let i = 1; i < points.length - 1; i++) {
+        const xc = (points[i][0] + points[i + 1][0]) / 2
+        const yc = (points[i][1] + points[i + 1][1]) / 2
+        ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc)
+      }
+      ctx.lineTo(
+        points[points.length - 1][0],
+        points[points.length - 1][1],
+      )
+      ctx.stroke()
+    }
+
+    const renderFrame = (alpha: number) => {
+      ctx.clearRect(0, 0, viewW, viewH)
+      if (alpha < 0.01) return
+
+      // Halo spotlight chaud autour du curseur
+      const halo = ctx.createRadialGradient(
+        cursor.x,
+        cursor.y,
+        0,
+        cursor.x,
+        cursor.y,
+        600,
+      )
+      halo.addColorStop(0, `rgba(181, 158, 125, ${0.18 * alpha})`)
+      halo.addColorStop(0.4, `rgba(181, 158, 125, ${0.07 * alpha})`)
+      halo.addColorStop(1, 'transparent')
+      ctx.fillStyle = halo
+      ctx.fillRect(0, 0, viewW, viewH)
+
+      // Lignes : couleur khaki très tamisée
+      ctx.strokeStyle = `rgba(181, 158, 125, ${0.14 * alpha})`
+      ctx.lineWidth = 1
+
+      // Lignes horizontales (y constant, x varie)
+      const samplesH = Math.ceil(viewW / SAMPLE_SPACING)
+      const rows = Math.ceil(viewH / CELL_SIZE) + 1
+      for (let row = 0; row <= rows; row++) {
+        const y = row * CELL_SIZE
+        const points: [number, number][] = []
+        for (let i = 0; i <= samplesH; i++) {
+          const x = (i / samplesH) * viewW
+          points.push(displace(x, y))
+        }
+        drawSmoothPath(points)
+      }
+
+      // Lignes verticales (x constant, y varie)
+      const samplesV = Math.ceil(viewH / SAMPLE_SPACING)
+      const cols = Math.ceil(viewW / CELL_SIZE) + 1
+      for (let col = 0; col <= cols; col++) {
+        const x = col * CELL_SIZE
+        const points: [number, number][] = []
+        for (let i = 0; i <= samplesV; i++) {
+          const y = (i / samplesV) * viewH
+          points.push(displace(x, y))
+        }
+        drawSmoothPath(points)
+      }
+    }
+
+    // WCAG 2.3.3 : reduce-motion = grille statique centrée (pas de RAF)
     if (prefersReducedMotion) {
-      el.style.setProperty('--mx', '50vw')
-      el.style.setProperty('--my', '50vh')
-      el.style.setProperty('--gx', '0px')
-      el.style.setProperty('--gy', '0px')
-      el.style.opacity = pathname === '/' ? '0' : '1'
-      return
+      cursor.x = viewW / 2
+      cursor.y = viewH / 2
+      renderFrame(isHome ? 0 : 1)
+      return () => {
+        window.removeEventListener('resize', resize)
+      }
     }
 
     let rafId = 0
-    const isHome = pathname === '/'
-
     const tick = () => {
       // Spring physics : v += (target - current) * stiffness ; v *= friction
-      const dx = target.current.x - current.current.x
-      const dy = target.current.y - current.current.y
+      const dx = target.current.x - cursor.x
+      const dy = target.current.y - cursor.y
       velocity.current.x = (velocity.current.x + dx * STIFFNESS) * FRICTION
       velocity.current.y = (velocity.current.y + dy * STIFFNESS) * FRICTION
-      current.current.x += velocity.current.x
-      current.current.y += velocity.current.y
-
-      // Halo : position absolue de la souris (en pixels)
-      el.style.setProperty('--mx', `${current.current.x}px`)
-      el.style.setProperty('--my', `${current.current.y}px`)
-
-      // Grille : parallax léger autour du repos.
-      // Mouse normalisée [-1, +1] → décalage [-GRID_PARALLAX, +GRID_PARALLAX].
-      // Direction inversée pour un effet "la grille s'éloigne du curseur"
-      // (sensation naturelle d'élasticité, comme un tissu qu'on étire).
-      const vw = window.innerWidth
-      const vh = window.innerHeight
-      const nx = (current.current.x / vw - 0.5) * 2 // [-1, +1]
-      const ny = (current.current.y / vh - 0.5) * 2
-      const gx = -nx * GRID_PARALLAX
-      const gy = -ny * GRID_PARALLAX
-      el.style.setProperty('--gx', `${gx}px`)
-      el.style.setProperty('--gy', `${gy}px`)
+      cursor.x += velocity.current.x
+      cursor.y += velocity.current.y
 
       // Opacity : sur la home, fade in progressif quand on quitte le hero
-      // (la grille reste invisible tant qu'on voit l'image salon plein écran).
+      let alpha = 1
       if (isHome) {
-        const heroFade = Math.min(
+        alpha = Math.min(
           1,
           Math.max(0, window.scrollY / (window.innerHeight * HERO_FADE_END)),
         )
-        el.style.opacity = String(heroFade)
-      } else {
-        el.style.opacity = '1'
       }
 
+      renderFrame(alpha)
       rafId = requestAnimationFrame(tick)
     }
 
     tick()
-    return () => cancelAnimationFrame(rafId)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      window.removeEventListener('resize', resize)
+    }
   }, [pathname])
 
   return (
-    <div
-      ref={ref}
-      className="grid-bg"
+    <canvas
+      ref={canvasRef}
+      aria-hidden
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 0,
         pointerEvents: 'none',
-        opacity: pathname === '/' ? 0 : 1, // initial state : caché sur home, visible ailleurs
+        opacity: pathname === '/' ? 0 : 1, // initial state : caché sur home
         transition: 'opacity 0.3s ease',
         willChange: 'opacity',
       }}

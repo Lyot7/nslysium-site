@@ -30,39 +30,8 @@ html {
   /* scroll-behavior: smooth retiré — interfère avec GSAP ScrollTrigger */
 }
 
-/* ─── Grille décorative (fond global) ────────────────────────────────────── */
-.grid-bg {
-  --mx: 50vw;
-  --my: 50vh;
-  --gx: 0px;
-  --gy: 0px;
-  background:
-    /* Spotlight souris — cercle chaud centré sur le curseur */
-    radial-gradient(600px circle at var(--mx) var(--my),
-      rgba(181, 158, 125, 0.18) 0%,
-      rgba(181, 158, 125, 0.07) 40%,
-      transparent 70%
-    ),
-    /* Halo statique en haut de page */
-    radial-gradient(ellipse 90% 55% at 50% 0%,
-      rgba(181, 158, 125, 0.12) 0%,
-      transparent 65%
-    ),
-    /* Lignes horizontales — décalées par var(--gy) */
-    linear-gradient(rgba(181, 158, 125, 0.12) 1px, transparent 1px),
-    /* Lignes verticales — décalées par var(--gx) */
-    linear-gradient(90deg, rgba(181, 158, 125, 0.12) 1px, transparent 1px);
-  background-size:
-    100% 100%,
-    100% 100%,
-    72px 72px,
-    72px 72px;
-  background-position:
-    0 0,
-    0 0,
-    var(--gx) var(--gy),
-    var(--gx) var(--gy);
-}
+/* La grille décorative (.grid-bg) est désormais rendue en Canvas 2D
+   par le composant GridBackground.tsx — lignes courbes warp au curseur. */
 
 body {
   background-color: #1F1A14;
