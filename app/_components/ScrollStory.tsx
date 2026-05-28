@@ -329,8 +329,8 @@ export default function ScrollStory() {
           zIndex: -1,
           pointerEvents: 'none',
           background: isMobile
-            ? // Mobile : halo modéré centré sur le bloc texte (bias légèrement vers le haut)
-              'radial-gradient(ellipse 100% 55% at 50% 36%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 30%, transparent 72%, rgba(15, 12, 9, 0.35) 100%)'
+            ? // Mobile : halo recalé en haut du viewport (bloc texte en flex-start)
+              'radial-gradient(ellipse 100% 55% at 50% 26%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 35%, transparent 72%, rgba(15, 12, 9, 0.32) 100%)'
             : // Desktop : halo ovale modéré, laisse respirer l'image salon
               'radial-gradient(ellipse 55% 70% at 28% 45%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.42) 40%, rgba(15, 12, 9, 0.16) 72%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 25%, transparent 75%, rgba(15, 12, 9, 0.35) 100%)',
         }}
@@ -408,12 +408,12 @@ export default function ScrollStory() {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              // Centré vertical + padding asymétrique sur mobile : le bloc
-              // remonte légèrement (top 4rem juste sous le header, bottom 9rem
-              // pour laisser le cône respirer en bas de la table).
-              justifyContent: 'center',
+              // Mobile : flex-start + padding-top juste sous le header → bloc
+              // collé en haut, beaucoup d'espace en bas pour le cône qui sort
+              // de la table. Desktop : centré vertical (inchangé).
+              justifyContent: isMobile ? 'flex-start' : 'center',
               padding: isMobile
-                ? '4rem 1.5rem 9rem'
+                ? '6rem 1.5rem 4rem'
                 : '5rem clamp(2rem, 3vw, 3rem) 5rem clamp(2.5rem, 7vw, 6rem)',
               textAlign: isMobile ? 'center' : 'left',
               minHeight: '100dvh',
