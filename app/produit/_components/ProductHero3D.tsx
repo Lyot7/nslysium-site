@@ -29,7 +29,9 @@ const COLORS: Color[] = [
     id: 'orange',
     name: 'Orange',
     description: 'Carrot Orange',
-    hex: '#F1983A',
+    // #F1983A virait au jaune doré sous l'éclairage Three.js (envMap 2.0).
+    // #D4671F est un vrai orange carotte saturé qui reste orange au rendu.
+    hex: '#D4671F',
     context: 'Cuisine ouverte, lumière naturelle',
     packaging: 'Carrot Orange + bois clair',
   },

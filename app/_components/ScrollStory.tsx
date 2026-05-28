@@ -329,10 +329,10 @@ export default function ScrollStory() {
           zIndex: -1,
           pointerEvents: 'none',
           background: isMobile
-            ? // Mobile : halo doux centré sur le bloc texte (titre+paragraphe+CTA)
-              'radial-gradient(ellipse 95% 45% at 50% 38%, rgba(15, 12, 9, 0.78) 0%, rgba(15, 12, 9, 0.5) 40%, rgba(15, 12, 9, 0.18) 70%, transparent 90%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 30%, transparent 70%, rgba(15, 12, 9, 0.45) 100%)'
-            : // Desktop : halo ovale large couvrant tout le texte (haut + paragraphe)
-              'radial-gradient(ellipse 50% 65% at 30% 42%, rgba(15, 12, 9, 0.78) 0%, rgba(15, 12, 9, 0.5) 40%, rgba(15, 12, 9, 0.18) 72%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 25%, transparent 75%, rgba(15, 12, 9, 0.45) 100%)',
+            ? // Mobile : halo dense centré sur le bloc texte (titre+paragraphe+CTA)
+              'radial-gradient(ellipse 100% 50% at 50% 38%, rgba(15, 12, 9, 0.92) 0%, rgba(15, 12, 9, 0.72) 35%, rgba(15, 12, 9, 0.35) 65%, transparent 90%), linear-gradient(180deg, rgba(15, 12, 9, 0.45) 0%, transparent 28%, transparent 70%, rgba(15, 12, 9, 0.5) 100%)'
+            : // Desktop : halo ovale dense couvrant tout le texte gauche
+              'radial-gradient(ellipse 55% 72% at 28% 45%, rgba(15, 12, 9, 0.92) 0%, rgba(15, 12, 9, 0.7) 38%, rgba(15, 12, 9, 0.3) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.42) 0%, transparent 22%, transparent 75%, rgba(15, 12, 9, 0.5) 100%)',
         }}
       />
 
@@ -415,10 +415,10 @@ export default function ScrollStory() {
               textAlign: isMobile ? 'center' : 'left',
               minHeight: '100dvh',
               // Pas de voile rectangulaire : la lisibilité est assurée par le halo
-              // global dans l'overlay parent + un text-shadow doux sur chaque ligne.
+              // global dans l'overlay parent + un text-shadow profond sur chaque ligne.
               background: 'transparent',
               textShadow:
-                '0 1px 2px rgba(0, 0, 0, 0.5), 0 2px 12px rgba(0, 0, 0, 0.45), 0 0 28px rgba(0, 0, 0, 0.35)',
+                '0 1px 2px rgba(0, 0, 0, 0.85), 0 2px 8px rgba(0, 0, 0, 0.75), 0 4px 24px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 0, 0, 0.45)',
             }}
           >
             {renderTag('Reach Your Elysium')}
@@ -435,14 +435,14 @@ export default function ScrollStory() {
               style={{
                 fontSize: isMobile ? '0.95rem' : '1.1rem',
                 lineHeight: 1.78,
-                color: 'rgba(250,247,242,0.62)',
+                color: 'rgba(250,247,242,0.92)',
                 marginBottom: '2rem',
                 maxWidth: '52ch',
                 fontFamily: 'var(--font-dm-sans)',
               }}
             >
               Libérez votre esprit de la logistique santé. NSLysium centralise sport, nutrition et
-              sommeil en une interface unifiée — pilotée par la voix, gardée par vous seul.
+              sommeil en une interface unifiée, pilotée par la voix, gardée par vous seul.
             </p>
 
             <div
