@@ -40,7 +40,6 @@ export default function VoiceSimulator() {
   )
   const [typedReply, setTypedReply] = useState('')
   const [userControlled, setUserControlled] = useState(false)
-  const audioCtxRef = useRef<AudioContext | null>(null)
   const timersRef = useRef<number[]>([])
 
   // Nettoyage des timers
@@ -59,13 +58,11 @@ export default function VoiceSimulator() {
     // ── 1. Phase écoute : on simule le micro qui capte (1.2s)
     const t1 = window.setTimeout(() => {
       setPhase('thinking')
-      playChime('thinking')
     }, 1200)
 
     // ── 2. Phase réflexion (700ms)
     const t2 = window.setTimeout(() => {
       setPhase('replying')
-      playChime('reply')
       typeReply(DEMOS[idx].reply)
     }, 1200 + REPLY_LATENCY)
 
@@ -88,33 +85,8 @@ export default function VoiceSimulator() {
     step()
   }
 
-  // Petite note sonore (Web Audio API)
-  const playChime = (kind: 'thinking' | 'reply') => {
-    try {
-      if (!audioCtxRef.current) {
-        const AC: typeof AudioContext = (window.AudioContext ||
-          (window as unknown as { webkitAudioContext: typeof AudioContext })
-            .webkitAudioContext) as typeof AudioContext
-        audioCtxRef.current = new AC()
-      }
-      const ctx = audioCtxRef.current
-      if (!ctx) return
-      const o = ctx.createOscillator()
-      const g = ctx.createGain()
-      o.type = 'sine'
-      o.frequency.value = kind === 'thinking' ? 520 : 740
-      g.gain.value = 0
-      o.connect(g)
-      g.connect(ctx.destination)
-      const now = ctx.currentTime
-      g.gain.linearRampToValueAtTime(0.05, now + 0.02)
-      g.gain.linearRampToValueAtTime(0, now + 0.35)
-      o.start(now)
-      o.stop(now + 0.36)
-    } catch {
-      // ignore — l'audio est optionnel
-    }
-  }
+  // Chime Web Audio retiré sur demande utilisateur : trop intrusif sur un site
+  // calme et premium. Le visuel des anneaux + transcript animé suffit.
 
   // Auto-cycling des démos si l'utilisateur ne touche pas.
   // Gated par prefers-reduced-motion (WCAG 2.3.3) ET document.visibilityState
@@ -144,16 +116,6 @@ export default function VoiceSimulator() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userControlled])
-
-  // Cleanup AudioContext au démontage du composant
-  useEffect(
-    () => () => {
-      audioCtxRef.current?.close().catch(() => {
-        // ignore — context peut déjà être fermé
-      })
-    },
-    [],
-  )
 
   const handleDemoClick = (idx: number) => {
     setUserControlled(true)
