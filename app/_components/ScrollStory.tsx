@@ -329,10 +329,10 @@ export default function ScrollStory() {
           zIndex: -1,
           pointerEvents: 'none',
           background: isMobile
-            ? // Mobile : halo dense centré sur le bloc texte (titre+paragraphe+CTA)
-              'radial-gradient(ellipse 100% 50% at 50% 38%, rgba(15, 12, 9, 0.92) 0%, rgba(15, 12, 9, 0.72) 35%, rgba(15, 12, 9, 0.35) 65%, transparent 90%), linear-gradient(180deg, rgba(15, 12, 9, 0.45) 0%, transparent 28%, transparent 70%, rgba(15, 12, 9, 0.5) 100%)'
-            : // Desktop : halo ovale dense couvrant tout le texte gauche
-              'radial-gradient(ellipse 55% 72% at 28% 45%, rgba(15, 12, 9, 0.92) 0%, rgba(15, 12, 9, 0.7) 38%, rgba(15, 12, 9, 0.3) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.42) 0%, transparent 22%, transparent 75%, rgba(15, 12, 9, 0.5) 100%)',
+            ? // Mobile : halo modéré centré sur le bloc texte (titre+paragraphe+CTA)
+              'radial-gradient(ellipse 100% 50% at 50% 38%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 30%, transparent 72%, rgba(15, 12, 9, 0.35) 100%)'
+            : // Desktop : halo ovale modéré, laisse respirer l'image salon
+              'radial-gradient(ellipse 55% 70% at 28% 45%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.42) 40%, rgba(15, 12, 9, 0.16) 72%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 25%, transparent 75%, rgba(15, 12, 9, 0.35) 100%)',
         }}
       />
 

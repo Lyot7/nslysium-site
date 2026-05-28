@@ -279,6 +279,94 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef, heroAnchorRef }: SpeakerM
   )
 }
 
+// ─── Lights adaptatives ──────────────────────────────────────────────────────
+// En hero (cône posé sur la table du salon), on bascule vers un éclairage chaud
+// et doux qui s'intègre à l'ambiance "feu de cheminée" de l'image de fond.
+// Hors hero (scroll au-delà), on revient à l'éclairage studio standard.
+
+interface SceneLightsProps {
+  scrollRef: React.MutableRefObject<ScrollRef>
+  heroAnchorRef?: React.MutableRefObject<HeroAnchor>
+}
+
+// Presets de lights : { intensity, color en linear-rgb hex }
+// "studio" = état hors hero (rendu actuel). "salon" = éclairage tamisé chaud.
+const LIGHT_PRESETS = {
+  studio: {
+    ambient:     { intensity: 0.30, color: '#FFF3E0' },
+    directional: { intensity: 1.20, color: '#FFEDD0' },
+    pointA:      { intensity: 1.00, color: '#E8DFFF' }, // froid violet (fill)
+    pointB:      { intensity: 1.30, color: '#FFB070' }, // chaud (key arrière)
+    pointC:      { intensity: 0.60, color: '#FFE4C4' }, // chaud bas (rim)
+    pointD:      { intensity: 0.90, color: '#FFFFFF' }, // neutre frontal
+    envIntensity: 0.85,
+  },
+  salon: {
+    // Salon = lumière dorée tamisée du feu de cheminée, presque pas de fill froid
+    ambient:     { intensity: 0.42, color: '#F4C68A' }, // ambient ambre doré
+    directional: { intensity: 0.60, color: '#F5B97A' }, // soleil tamisé chaud
+    pointA:      { intensity: 0.15, color: '#F4C68A' }, // tue le froid violet
+    pointB:      { intensity: 0.85, color: '#E89455' }, // braise plus saturée
+    pointC:      { intensity: 0.45, color: '#F2B98C' }, // rim chaud bas
+    pointD:      { intensity: 0.35, color: '#F5D9B0' }, // frontal très doux chaud
+    envIntensity: 0.55,
+  },
+}
+
+function SceneLights({ scrollRef, heroAnchorRef }: SceneLightsProps) {
+  const ambientRef     = useRef<THREE.AmbientLight>(null)
+  const directionalRef = useRef<THREE.DirectionalLight>(null)
+  const pointARef      = useRef<THREE.PointLight>(null)
+  const pointBRef      = useRef<THREE.PointLight>(null)
+  const pointCRef      = useRef<THREE.PointLight>(null)
+  const pointDRef      = useRef<THREE.PointLight>(null)
+  const tmpStudio = useRef(new THREE.Color())
+  const tmpSalon  = useRef(new THREE.Color())
+
+  useFrame(() => {
+    // heroFade : 1 quand cône posé sur la table, 0 dès qu'on scrolle.
+    const hero = heroAnchorRef?.current
+    const heroFade = hero?.active
+      ? Math.max(0, 1 - scrollRef.current.progress / 0.05)
+      : 0
+    const t = heroFade // 0 studio → 1 salon
+
+    // Lerp entre studio et salon pour intensity ET couleur.
+    const apply = (
+      ref: React.MutableRefObject<THREE.Light | null>,
+      studio: { intensity: number; color: string },
+      salon: { intensity: number; color: string },
+    ) => {
+      const l = ref.current
+      if (!l) return
+      l.intensity = studio.intensity * (1 - t) + salon.intensity * t
+      tmpStudio.current.set(studio.color)
+      tmpSalon.current.set(salon.color)
+      tmpStudio.current.lerp(tmpSalon.current, t)
+      l.color.copy(tmpStudio.current)
+    }
+
+    apply(ambientRef     as React.MutableRefObject<THREE.Light | null>, LIGHT_PRESETS.studio.ambient,     LIGHT_PRESETS.salon.ambient)
+    apply(directionalRef as React.MutableRefObject<THREE.Light | null>, LIGHT_PRESETS.studio.directional, LIGHT_PRESETS.salon.directional)
+    apply(pointARef      as React.MutableRefObject<THREE.Light | null>, LIGHT_PRESETS.studio.pointA,      LIGHT_PRESETS.salon.pointA)
+    apply(pointBRef      as React.MutableRefObject<THREE.Light | null>, LIGHT_PRESETS.studio.pointB,      LIGHT_PRESETS.salon.pointB)
+    apply(pointCRef      as React.MutableRefObject<THREE.Light | null>, LIGHT_PRESETS.studio.pointC,      LIGHT_PRESETS.salon.pointC)
+    apply(pointDRef      as React.MutableRefObject<THREE.Light | null>, LIGHT_PRESETS.studio.pointD,      LIGHT_PRESETS.salon.pointD)
+  })
+
+  return (
+    <>
+      <ambientLight     ref={ambientRef}     intensity={LIGHT_PRESETS.studio.ambient.intensity}     color={LIGHT_PRESETS.studio.ambient.color} />
+      <directionalLight ref={directionalRef} intensity={LIGHT_PRESETS.studio.directional.intensity} color={LIGHT_PRESETS.studio.directional.color}
+                        position={[3, 6, 4]} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
+      <pointLight ref={pointARef} position={[-4, 2, 3]}   intensity={LIGHT_PRESETS.studio.pointA.intensity} color={LIGHT_PRESETS.studio.pointA.color} />
+      <pointLight ref={pointBRef} position={[0, 4, -3]}   intensity={LIGHT_PRESETS.studio.pointB.intensity} color={LIGHT_PRESETS.studio.pointB.color} />
+      <pointLight ref={pointCRef} position={[0, -3, 2]}   intensity={LIGHT_PRESETS.studio.pointC.intensity} color={LIGHT_PRESETS.studio.pointC.color} />
+      <pointLight ref={pointDRef} position={[0, 0.5, 5]}  intensity={LIGHT_PRESETS.studio.pointD.intensity} color={LIGHT_PRESETS.studio.pointD.color} />
+    </>
+  )
+}
+
 // ─── Canvas + export ─────────────────────────────────────────────────────────
 
 interface AetherSceneProps {
@@ -300,12 +388,7 @@ function AetherCanvasInner({ scrollRef, mouseRef, colorRef, heroAnchorRef }: Aet
       dpr={[1, 2]}
       style={{ width: '100%', height: '100%' }}
     >
-      <ambientLight intensity={0.30} color="#FFF3E0" />
-      <directionalLight position={[3, 6, 4]} intensity={1.2} color="#FFEDD0" castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
-      <pointLight position={[-4, 2, 3]} intensity={1.0} color="#E8DFFF" />
-      <pointLight position={[0, 4, -3]} intensity={1.3} color="#FFB070" />
-      <pointLight position={[0, -3, 2]} intensity={0.6} color="#FFE4C4" />
-      <pointLight position={[0, 0.5, 5]} intensity={0.9} color="#FFFFFF" />
+      <SceneLights scrollRef={scrollRef} heroAnchorRef={heroAnchorRef} />
       <Environment preset="studio" environmentIntensity={0.85} />
       <SpeakerModel scrollRef={scrollRef} mouseRef={mouseRef} colorRef={colorRef} heroAnchorRef={heroAnchorRef} />
     </Canvas>
