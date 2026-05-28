@@ -9,8 +9,8 @@ const FRICTION = 0.82
 
 // Grille déformable façon "tissu élastique"
 const CELL_SIZE = 72         // px entre 2 lignes (matche l'ancienne version CSS)
-const CURVE_RADIUS = 320     // px : rayon d'influence du curseur
-const CURVE_STRENGTH = 42    // px : déplacement max d'un point
+const CURVE_RADIUS = 280     // px : rayon d'influence du curseur
+const CURVE_STRENGTH = 20    // px : déplacement max d'un point — subtil
 const SAMPLE_SPACING = 36    // px entre 2 points de contrôle d'une ligne
 
 // Sur la home, la grille s'efface complètement pendant le hero (image salon
