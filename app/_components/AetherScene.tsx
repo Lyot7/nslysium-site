@@ -47,30 +47,46 @@ interface ScrollRef { progress: number; section: number }
 //   Abo / Contact         =  1fr centré
 
 const WAYPOINTS_WIDE: Waypoint[] = [
-  // ── Hero + Produit : colonne droite ────────────────────────────────────────
-  { t: 0.00, vx:  1.0, vy: 0.08, scale: 0.38, rotX: 0.00, rotZ:  0.00, li: '#FFCB94', lint: 3.0 },
-  { t: 0.22, vx:  1.0, vy: 0.04, scale: 0.37, rotX: 0.15, rotZ: -0.06, li: '#FFD78A', lint: 3.5 },
-  // ── Glissement R→L vers App ────────────────────────────────────────────────
-  { t: 0.33, vx: -1.0, vy: 0.06, scale: 0.37, rotX: 0.05, rotZ:  0.00, li: '#A8C8FF', lint: 3.0 },
-  // ── App : colonne gauche ───────────────────────────────────────────────────
-  { t: 0.42, vx: -1.0, vy: 0.04, scale: 0.37, rotX: 0.08, rotZ:  0.16, li: '#A8C8FF', lint: 3.2 },
-  // ── Glissement L→R vers Cas ────────────────────────────────────────────────
-  { t: 0.53, vx:  1.0, vy: 0.06, scale: 0.37, rotX: 0.05, rotZ:  0.00, li: '#FFB070', lint: 3.5 },
-  // ── Cas : colonne droite ───────────────────────────────────────────────────
-  { t: 0.66, vx:  1.0, vy: 0.04, scale: 0.38, rotX: 0.08, rotZ:  0.06, li: '#FFB070', lint: 3.5 },
-  // ── Abo : discret en haut à droite ─────────────────────────────────────────
-  { t: 0.78, vx:  0.5, vy: 0.42, scale: 0.34, rotX: 0.04, rotZ: -0.03, li: '#FFC080', lint: 3.0 },
-  // ── Contact : fond sombre masque le modèle ─────────────────────────────────
-  { t: 1.00, vx:  0.5, vy: 0.45, scale: 0.32, rotX: 0.02, rotZ: -0.02, li: '#FFC080', lint: 2.5 },
+  // ════ HERO ════ (0.00 → 0.12) — sur la table du salon ═════════════════════
+  { t: 0.00, vx:  0.00, vy: -0.50, scale: 0.16, rotX: 0.02, rotZ:  0.00, li: '#FFA755', lint: 5.0 },
+  // Lift-off : monte verticalement, salon disparaît
+  { t: 0.12, vx:  0.00, vy: -0.10, scale: 0.30, rotX: 0.04, rotZ: -0.02, li: '#FFCB94', lint: 4.0 },
+
+  // ════ VOIX ════ (0.22 → 0.42) — palier droite, fixe ═══════════════════════
+  // 0.18 = arrivée à droite (transition courte 0.06)
+  { t: 0.18, vx:  0.85, vy:  0.05, scale: 0.36, rotX: 0.06, rotZ:  0.04, li: '#FFD78A', lint: 3.5 },
+  // 0.42 = fin du palier droite (durée stable = 24% du scroll)
+  { t: 0.42, vx:  0.85, vy:  0.05, scale: 0.36, rotX: 0.06, rotZ:  0.04, li: '#FFD78A', lint: 3.5 },
+
+  // ════ TRANSITION ════ (0.42 → 0.58) — slide centre vers gauche ════════════
+  { t: 0.50, vx:  0.00, vy:  0.05, scale: 0.40, rotX: 0.08, rotZ:  0.00, li: '#FFCB94', lint: 3.8 },
+
+  // ════ MOMENTS ════ (0.58 → 0.78) — palier gauche, fixe ════════════════════
+  // 0.58 = arrivée à gauche
+  { t: 0.58, vx: -0.85, vy:  0.05, scale: 0.36, rotX: 0.06, rotZ: -0.04, li: '#FFB070', lint: 3.5 },
+  // 0.78 = fin du palier gauche (durée stable = 20% du scroll)
+  { t: 0.78, vx: -0.85, vy:  0.05, scale: 0.36, rotX: 0.06, rotZ: -0.04, li: '#FFB070', lint: 3.5 },
+
+  // ════ CTA ════ (0.86 → 1.0) — retour au centre pour finir au milieu ══════
+  { t: 0.88, vx:  0.00, vy:  0.05, scale: 0.40, rotX: 0.04, rotZ:  0.00, li: '#FFC080', lint: 3.5 },
+  { t: 1.00, vx:  0.00, vy:  0.00, scale: 0.42, rotX: 0.02, rotZ:  0.00, li: '#FFC080', lint: 3.5 },
 ]
 
-// Layout < 768 px : colonne unique, modèle fond ambiant centré
+// Mobile : centré horizontalement, paliers verticaux pour rester stable
 const WAYPOINTS_MOBILE: Waypoint[] = [
-  { t: 0.00, vx: 0.0, vy: 0.30, scale: 0.36, rotX: 0.00, rotZ:  0.00, li: '#FFCB94', lint: 3.0 },
-  { t: 0.30, vx: 0.0, vy: 0.26, scale: 0.32, rotX: 0.06, rotZ: -0.04, li: '#FFD78A', lint: 3.5 },
-  { t: 0.55, vx: 0.0, vy: 0.26, scale: 0.30, rotX: 0.05, rotZ:  0.05, li: '#A8C8FF', lint: 3.0 },
-  { t: 0.75, vx: 0.0, vy: 0.26, scale: 0.30, rotX: 0.05, rotZ: -0.04, li: '#FFB070', lint: 3.5 },
-  { t: 1.00, vx: 0.0, vy: 0.35, scale: 0.26, rotX: 0.00, rotZ:  0.00, li: '#FFC080', lint: 2.5 },
+  // Hero (table)
+  { t: 0.00, vx: 0.0, vy: -0.40, scale: 0.18, rotX: 0.02, rotZ:  0.00, li: '#FFA755', lint: 5.0 },
+  // Lift-off
+  { t: 0.15, vx: 0.0, vy: -0.05, scale: 0.30, rotX: 0.05, rotZ: -0.03, li: '#FFD78A', lint: 3.5 },
+  // Voix — palier centré, stable
+  { t: 0.22, vx: 0.0, vy:  0.05, scale: 0.34, rotX: 0.06, rotZ:  0.02, li: '#FFCB94', lint: 3.5 },
+  { t: 0.45, vx: 0.0, vy:  0.05, scale: 0.34, rotX: 0.06, rotZ:  0.02, li: '#FFCB94', lint: 3.5 },
+  // Moments — palier centré, stable (légère rotation différente pour le sentir bouger un peu)
+  { t: 0.55, vx: 0.0, vy:  0.05, scale: 0.34, rotX: 0.06, rotZ: -0.02, li: '#FFB070', lint: 3.5 },
+  { t: 0.78, vx: 0.0, vy:  0.05, scale: 0.34, rotX: 0.06, rotZ: -0.02, li: '#FFB070', lint: 3.5 },
+  // CTA — finit centré au milieu de la page
+  { t: 0.90, vx: 0.0, vy:  0.05, scale: 0.36, rotX: 0.02, rotZ:  0.00, li: '#FFC080', lint: 3.2 },
+  { t: 1.00, vx: 0.0, vy:  0.00, scale: 0.40, rotX: 0.00, rotZ:  0.00, li: '#FFC080', lint: 3.5 },
 ]
 
 function pickWaypoints(): Waypoint[] {
@@ -80,13 +96,16 @@ function pickWaypoints(): Waypoint[] {
 
 // ─── Modèle 3D ──────────────────────────────────────────────────────────────
 
+interface HeroAnchor { vx: number; vy: number; active: boolean }
+
 interface SpeakerModelProps {
   scrollRef: React.MutableRefObject<ScrollRef>
   mouseRef:  React.MutableRefObject<{ x: number; y: number }>
   colorRef:  React.MutableRefObject<string>
+  heroAnchorRef?: React.MutableRefObject<HeroAnchor>
 }
 
-function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
+function SpeakerModel({ scrollRef, mouseRef, colorRef, heroAnchorRef }: SpeakerModelProps) {
   const { viewport } = useThree()
   const { scene }    = useGLTF('/models/speaker.glb') as unknown as { scene: THREE.Group }
   const groupRef     = useRef<THREE.Group>(null)
@@ -168,26 +187,46 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef }: SpeakerModelProps) {
     const baseScale = a.scale + (b.scale - a.scale) * st
     const finalSc   = Math.min(baseScale, maxScale)
 
-    const vxNow = a.vx + (b.vx - a.vx) * st
+    let vxNow = a.vx + (b.vx - a.vx) * st
+    let vyNow = a.vy + (b.vy - a.vy) * st
+
+    // ── Hero override : cône posé sur la table (position proportionnelle ─────
+    // à l'image salon, calculée côté parent et fournie via heroAnchorRef).
+    // Activé seulement quand active=true (progress très bas).
+    const hero = heroAnchorRef?.current
+    const heroFade = hero?.active
+      ? Math.max(0, 1 - scrollRef.current.progress / 0.05)
+      : 0
+    if (heroFade > 0) {
+      vxNow = vxNow * (1 - heroFade) + hero!.vx * heroFade
+      vyNow = vyNow * (1 - heroFade) + hero!.vy * heroFade
+    }
+
     const modelR = 0.156 * finalSc * DISPLAY_SCALE
-    // Marge 0.7× : le modèle peut légèrement dépasser les bords (crop partiel ok)
-    // sans être tiré vers le centre et superposé au texte.
     const safeHalf = Math.max(0, viewport.width * 0.5 - modelR * 0.7)
     const baseX    = Math.sign(vxNow) * Math.min(Math.abs(vxNow * colW), safeHalf)
 
-    const twy = (a.vy + (b.vy - a.vy) * st) * viewport.height * 0.5
+    const twy = vyNow * viewport.height * 0.5
     const trx = a.rotX + (b.rotX - a.rotX) * st
     const trz = a.rotZ + (b.rotZ - a.rotZ) * st
 
+    // ── Idle activity : OFF quand posé sur la table (heroFade≈1), ON sinon ──
+    const idleActivity = 1 - heroFade
+    const mX = mouseRef.current.x * idleActivity
+    const mY = mouseRef.current.y * idleActivity
+
     const lf = 0.075
-    cur.current.x  = THREE.MathUtils.lerp(cur.current.x,  baseX + mouseRef.current.x * 0.18, lf)
-    cur.current.y  = THREE.MathUtils.lerp(cur.current.y,  twy   + mouseRef.current.y * 0.12, lf)
-    cur.current.sc = THREE.MathUtils.lerp(cur.current.sc, finalSc * DISPLAY_SCALE,            lf)
-    cur.current.rx = THREE.MathUtils.lerp(cur.current.rx, trx + mouseRef.current.y * 0.09,   lf)
-    cur.current.rz = THREE.MathUtils.lerp(cur.current.rz, trz + mouseRef.current.x * 0.05,   lf)
+    cur.current.x  = THREE.MathUtils.lerp(cur.current.x,  baseX + mX * 0.18, lf)
+    cur.current.y  = THREE.MathUtils.lerp(cur.current.y,  twy   + mY * 0.12, lf)
+    cur.current.sc = THREE.MathUtils.lerp(cur.current.sc, finalSc * DISPLAY_SCALE,        lf)
+    cur.current.rx = THREE.MathUtils.lerp(cur.current.rx, trx + mY * 0.09,   lf)
+    cur.current.rz = THREE.MathUtils.lerp(cur.current.rz, trz + mX * 0.05,   lf)
+
+    // Flottement vertical (sin) : éteint quand posé, allumé dès qu'on scroll
+    const floatY = Math.sin(t * 0.65) * 0.045 * idleActivity
 
     groupRef.current.position.x = cur.current.x
-    groupRef.current.position.y = cur.current.y + Math.sin(t * 0.65) * 0.045
+    groupRef.current.position.y = cur.current.y + floatY
     groupRef.current.scale.setScalar(cur.current.sc)
     groupRef.current.rotation.x = cur.current.rx
     groupRef.current.rotation.z = cur.current.rz
@@ -231,11 +270,12 @@ interface AetherSceneProps {
   scrollRef: React.MutableRefObject<ScrollRef>
   mouseRef:  React.MutableRefObject<{ x: number; y: number }>
   colorRef:  React.MutableRefObject<string>
+  heroAnchorRef?: React.MutableRefObject<HeroAnchor>
   className?: string
   style?: React.CSSProperties
 }
 
-function AetherCanvasInner({ scrollRef, mouseRef, colorRef }: AetherSceneProps) {
+function AetherCanvasInner({ scrollRef, mouseRef, colorRef, heroAnchorRef }: AetherSceneProps) {
   return (
     <Canvas
       camera={{ position: [0, 0.10, 5.6], fov: 40 }}
@@ -252,18 +292,18 @@ function AetherCanvasInner({ scrollRef, mouseRef, colorRef }: AetherSceneProps) 
       <pointLight position={[0, -3, 2]} intensity={0.6} color="#FFE4C4" />
       <pointLight position={[0, 0.5, 5]} intensity={0.9} color="#FFFFFF" />
       <Environment preset="studio" environmentIntensity={0.85} />
-      <SpeakerModel scrollRef={scrollRef} mouseRef={mouseRef} colorRef={colorRef} />
+      <SpeakerModel scrollRef={scrollRef} mouseRef={mouseRef} colorRef={colorRef} heroAnchorRef={heroAnchorRef} />
     </Canvas>
   )
 }
 
-export default function AetherScene({ scrollRef, mouseRef, colorRef, className = '', style }: AetherSceneProps) {
+export default function AetherScene({ scrollRef, mouseRef, colorRef, heroAnchorRef, className = '', style }: AetherSceneProps) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
   if (!mounted) return null
   return (
     <div className={className} style={{ width: '100%', height: '100%', ...style }}>
-      <AetherCanvasInner scrollRef={scrollRef} mouseRef={mouseRef} colorRef={colorRef} />
+      <AetherCanvasInner scrollRef={scrollRef} mouseRef={mouseRef} colorRef={colorRef} heroAnchorRef={heroAnchorRef} />
     </div>
   )
 }
