@@ -495,13 +495,16 @@ export default function ScrollStory() {
               style={{
                 display: isMobile ? 'none' : 'flex',
                 alignItems: 'center',
-                gap: '0.5rem',
+                gap: '0.55rem',
                 marginTop: '3rem',
-                color: 'rgba(250,247,242,0.35)',
-                fontSize: '0.7rem',
-                letterSpacing: '0.18em',
+                color: '#C9B395',
+                fontSize: '0.72rem',
+                fontWeight: 600,
+                letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 fontFamily: 'var(--font-dm-sans)',
+                textShadow:
+                  '0 1px 2px rgba(0, 0, 0, 0.85), 0 2px 8px rgba(0, 0, 0, 0.6)',
               }}
             >
               <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
@@ -511,10 +514,10 @@ export default function ScrollStory() {
                   width="12"
                   height="18"
                   rx="6"
-                  stroke="rgba(250,247,242,0.35)"
-                  strokeWidth="1.2"
+                  stroke="#C9B395"
+                  strokeWidth="1.4"
                 />
-                <circle cx="7" cy="6" r="2" fill="rgba(181, 158, 125,0.7)" />
+                <circle cx="7" cy="6" r="2" fill="#B59E7D" />
               </svg>
               Découvrir
             </div>
