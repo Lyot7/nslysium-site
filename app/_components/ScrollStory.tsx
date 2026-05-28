@@ -111,13 +111,20 @@ export default function ScrollStory() {
   }, [])
 
   useEffect(() => {
+    // Pas de suivi souris sur touch device : pas de curseur, gaspillage
+    // d'event listener + le mouseRef sert au parallax cône en idle qui est
+    // déjà coupé sur touch via reduceMotionRef côté AetherScene.
+    const isTouchDevice =
+      window.matchMedia('(hover: none) and (pointer: coarse)').matches
+    if (isTouchDevice) return
+
     const onMove = (e: MouseEvent) => {
       mouseRef.current = {
         x: (e.clientX / window.innerWidth - 0.5) * 2,
         y: (e.clientY / window.innerHeight - 0.5) * -2,
       }
     }
-    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mousemove', onMove, { passive: true })
     return () => window.removeEventListener('mousemove', onMove)
   }, [])
 

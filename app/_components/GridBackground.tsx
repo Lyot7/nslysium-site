@@ -50,6 +50,11 @@ export default function GridBackground() {
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
+    // Touch device : pas de curseur → animations cursor-driven inutiles.
+    // On rend une seule frame statique (grille centrée, pas de RAF).
+    const isTouchDevice =
+      window.matchMedia('(hover: none) and (pointer: coarse)').matches ||
+      window.innerWidth < 768
 
     // Resize canvas avec DPR adaptatif (cap 2 pour préserver perf)
     let viewW = 0
@@ -151,13 +156,34 @@ export default function GridBackground() {
       }
     }
 
-    // WCAG 2.3.3 : reduce-motion = grille statique centrée (pas de RAF)
-    if (prefersReducedMotion) {
+    // WCAG 2.3.3 + mobile touch : grille statique centrée (pas de RAF).
+    // - reduce-motion : utilisateur a demandé moins d'animations.
+    // - touch device : pas de curseur → animations cursor-driven inutiles
+    //   et coûteuses en CPU/batterie.
+    if (prefersReducedMotion || isTouchDevice) {
       cursor.x = viewW / 2
       cursor.y = viewH / 2
-      renderFrame(isHome ? 0 : 1)
+      // Re-render sur scroll (pour le fade home/hero) sans RAF permanent
+      let lastAlpha = -1
+      const drawIfNeeded = () => {
+        let alpha = 1
+        if (isHome) {
+          alpha = Math.min(
+            1,
+            Math.max(0, window.scrollY / (window.innerHeight * HERO_FADE_END)),
+          )
+        }
+        if (Math.abs(alpha - lastAlpha) < 0.01) return
+        lastAlpha = alpha
+        canvas.style.opacity = String(alpha)
+        renderFrame(alpha)
+      }
+      drawIfNeeded()
+      const onScroll = () => drawIfNeeded()
+      window.addEventListener('scroll', onScroll, { passive: true })
       return () => {
         window.removeEventListener('resize', resize)
+        window.removeEventListener('scroll', onScroll)
       }
     }
 

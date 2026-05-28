@@ -118,18 +118,23 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef, heroAnchorRef }: SpeakerM
   // Matériaux colorables avec leur couleur originale du GLB sauvegardée
   const colorableMats = useRef<Array<{ mat: THREE.MeshStandardMaterial; orig: THREE.Color }>>([])
 
-  // WCAG 2.3.3 : si reduce-motion est demandé, on coupe le flottement sin et
-  // la dérive souris idle. La position scroll-driven reste (elle est sous
-  // contrôle de l'utilisateur via le scroll, donc autorisée).
+  // WCAG 2.3.3 + touch : coupe l'idle anim (mouse follow + sin float)
+  // si reduce-motion OU si on est sur un appareil sans curseur.
+  // La position scroll-driven reste (driven par le scroll utilisateur).
   const reduceMotionRef = useRef(false)
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    reduceMotionRef.current = mq.matches
-    const handler = (e: MediaQueryListEvent) => {
-      reduceMotionRef.current = e.matches
+    const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const touchMq = window.matchMedia('(hover: none) and (pointer: coarse)')
+    const update = () => {
+      reduceMotionRef.current = reduceMq.matches || touchMq.matches
     }
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
+    update()
+    reduceMq.addEventListener('change', update)
+    touchMq.addEventListener('change', update)
+    return () => {
+      reduceMq.removeEventListener('change', update)
+      touchMq.removeEventListener('change', update)
+    }
   }, [])
 
   useEffect(() => {
