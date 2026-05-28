@@ -3,9 +3,9 @@
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 
-// Spring physics : suivi souris doux, overshoot quasi-nul.
-const STIFFNESS = 0.07
-const FRICTION = 0.94
+// Suivi souris : lerp simple (pas de spring/velocity → aucun overshoot).
+// Plus la valeur est basse, plus le suivi est paresseux (et le halo lent).
+const SMOOTHING = 0.08
 
 // Grille déformable façon "tissu élastique"
 const CELL_SIZE = 72         // px entre 2 lignes (matche l'ancienne version CSS)
@@ -21,7 +21,6 @@ export default function GridBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const target = useRef({ x: 0, y: 0 })
   const current = useRef({ x: 0, y: 0 })
-  const velocity = useRef({ x: 0, y: 0 })
   const initialized = useRef(false)
   const pathname = usePathname()
 
@@ -164,13 +163,11 @@ export default function GridBackground() {
 
     let rafId = 0
     const tick = () => {
-      // Spring physics : v += (target - current) * stiffness ; v *= friction
-      const dx = target.current.x - cursor.x
-      const dy = target.current.y - cursor.y
-      velocity.current.x = (velocity.current.x + dx * STIFFNESS) * FRICTION
-      velocity.current.y = (velocity.current.y + dy * STIFFNESS) * FRICTION
-      cursor.x += velocity.current.x
-      cursor.y += velocity.current.y
+      // Lerp simple : cursor approche la cible sans jamais dépasser.
+      // current += (target - current) * SMOOTHING  →  pas de velocity, pas
+      // d'overshoot. Le halo et la grille suivent en glissant.
+      cursor.x += (target.current.x - cursor.x) * SMOOTHING
+      cursor.y += (target.current.y - cursor.y) * SMOOTHING
 
       // Opacity : sur la home, fade in progressif quand on quitte le hero
       let alpha = 1
