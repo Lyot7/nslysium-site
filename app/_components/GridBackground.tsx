@@ -3,9 +3,9 @@
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 
-// Spring physics : suivi souris doux, peu d'overshoot.
-const STIFFNESS = 0.09
-const FRICTION = 0.88
+// Spring physics : suivi souris doux, overshoot quasi-nul.
+const STIFFNESS = 0.07
+const FRICTION = 0.94
 
 // Grille déformable façon "tissu élastique"
 const CELL_SIZE = 72         // px entre 2 lignes (matche l'ancienne version CSS)
