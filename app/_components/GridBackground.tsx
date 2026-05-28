@@ -3,14 +3,14 @@
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 
-// Spring physics : le spotlight suit la souris avec un léger rebond élastique.
-const STIFFNESS = 0.12
-const FRICTION = 0.82
+// Spring physics : suivi souris doux, peu d'overshoot.
+const STIFFNESS = 0.09
+const FRICTION = 0.88
 
 // Grille déformable façon "tissu élastique"
 const CELL_SIZE = 72         // px entre 2 lignes (matche l'ancienne version CSS)
-const CURVE_RADIUS = 280     // px : rayon d'influence du curseur
-const CURVE_STRENGTH = 20    // px : déplacement max d'un point — subtil
+const CURVE_RADIUS = 260     // px : rayon d'influence du curseur
+const CURVE_STRENGTH = 12    // px : déplacement max d'un point — très subtil
 const SAMPLE_SPACING = 36    // px entre 2 points de contrôle d'une ligne
 
 // Sur la home, la grille s'efface complètement pendant le hero (image salon
