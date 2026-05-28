@@ -62,12 +62,14 @@ export default function Header() {
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: '0.4rem',
-          // padding symétrique gauche/droite, généreux pour contenir le CTA.
-          // borderRadius 9999px = courbe pleine. Pour qu'un CTA pleinement
-          // arrondi (height 32px → rayon 16px) tienne dans la courbe pill,
-          // il faut : padding-vertical 0.5rem (pill height 48px, rayon 24px)
-          // + padding-horizontal 0.85rem (13.6px de marge au bord).
-          padding: '0.5rem 0.85rem',
+          // Math du containement du CTA dans la pill (borderRadius 9999px) :
+          // Le CTA a height 32px + borderRadius 9999px → courbe de rayon 16px.
+          // Pour qu'il tienne dans la courbe pill, il faut :
+          //   pill_half_radius ≥ padding-horizontal + CTA_radius
+          // Avec padding `0.85rem 0.7rem` :
+          //   pill_height = 32 + 27.2 = 59.2px → half-radius 29.6px
+          //   ≥ 11.2 (padding-right) + 16 (CTA radius) = 27.2 ✓ avec ~2px de marge
+          padding: '0.85rem 0.7rem',
           borderRadius: '9999px',
           background: scrolled
             ? 'rgba(20, 16, 12, 0.85)'
