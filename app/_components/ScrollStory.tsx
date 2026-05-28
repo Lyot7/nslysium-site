@@ -330,7 +330,7 @@ export default function ScrollStory() {
           pointerEvents: 'none',
           background: isMobile
             ? // Mobile : halo recalé en haut du viewport (bloc texte en flex-start)
-              'radial-gradient(ellipse 100% 55% at 50% 26%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 35%, transparent 72%, rgba(15, 12, 9, 0.32) 100%)'
+              'radial-gradient(ellipse 100% 55% at 50% 32%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 35%, transparent 72%, rgba(15, 12, 9, 0.32) 100%)'
             : // Desktop : halo ovale modéré, laisse respirer l'image salon
               'radial-gradient(ellipse 55% 70% at 28% 45%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.42) 40%, rgba(15, 12, 9, 0.16) 72%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 25%, transparent 75%, rgba(15, 12, 9, 0.35) 100%)',
         }}
@@ -413,7 +413,7 @@ export default function ScrollStory() {
               // de la table. Desktop : centré vertical (inchangé).
               justifyContent: isMobile ? 'flex-start' : 'center',
               padding: isMobile
-                ? '6rem 1.5rem 4rem'
+                ? '8.5rem 1.5rem 4rem'
                 : '5rem clamp(2rem, 3vw, 3rem) 5rem clamp(2.5rem, 7vw, 6rem)',
               textAlign: isMobile ? 'center' : 'left',
               minHeight: '100dvh',
