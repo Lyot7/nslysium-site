@@ -329,8 +329,8 @@ export default function ScrollStory() {
           zIndex: -1,
           pointerEvents: 'none',
           background: isMobile
-            ? // Mobile : halo modéré recalé en haut (le bloc texte est désormais en flex-start)
-              'radial-gradient(ellipse 100% 50% at 50% 28%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 35%, transparent 72%, rgba(15, 12, 9, 0.35) 100%)'
+            ? // Mobile : halo modéré centré sur le bloc texte (qui est au milieu du viewport)
+              'radial-gradient(ellipse 100% 55% at 50% 42%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 30%, transparent 72%, rgba(15, 12, 9, 0.35) 100%)'
             : // Desktop : halo ovale modéré, laisse respirer l'image salon
               'radial-gradient(ellipse 55% 70% at 28% 45%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.42) 40%, rgba(15, 12, 9, 0.16) 72%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 25%, transparent 75%, rgba(15, 12, 9, 0.35) 100%)',
         }}
@@ -408,11 +408,11 @@ export default function ScrollStory() {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              // Desktop : centré vertical. Mobile : remonté en haut pour laisser
-              // la table + cône 3D respirer en bas de l'image salon.
-              justifyContent: isMobile ? 'flex-start' : 'center',
+              // Centré vertical sur les deux breakpoints — le content tombe
+              // autour du milieu du viewport, le cône respire en bas.
+              justifyContent: 'center',
               padding: isMobile
-                ? '5.5rem 1.5rem 3rem'
+                ? '6rem 1.5rem 6rem'
                 : '5rem clamp(2rem, 3vw, 3rem) 5rem clamp(2.5rem, 7vw, 6rem)',
               textAlign: isMobile ? 'center' : 'left',
               minHeight: '100dvh',
