@@ -175,12 +175,15 @@ export default function Header() {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              height: '32px',
-              padding: '0 0.95rem',
+              // Taille fixe explicite plus petite que les nav links (32px).
+              // CTA height 26px → half-radius 13. Pill half-radius 31.6.
+              // Marge de containement : 31.6 - (11.2 + 13) = 7.4px ✓.
+              height: '26px',
+              padding: '0 0.85rem',
               borderRadius: '9999px',
               background: '#B59E7D',
               color: '#1F1A14',
-              fontSize: '0.78rem',
+              fontSize: '0.76rem',
               fontWeight: 600,
               letterSpacing: '0.01em',
               textDecoration: 'none',
