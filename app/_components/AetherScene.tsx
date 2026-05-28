@@ -302,18 +302,21 @@ const LIGHT_PRESETS = {
     envIntensity: 0.85,
   },
   salon: {
-    // Salon = lumière dorée tamisée du feu de cheminée, presque pas de fill froid
-    ambient:     { intensity: 0.42, color: '#F4C68A' }, // ambient ambre doré
-    directional: { intensity: 0.60, color: '#F5B97A' }, // soleil tamisé chaud
-    pointA:      { intensity: 0.15, color: '#F4C68A' }, // tue le froid violet
-    pointB:      { intensity: 0.85, color: '#E89455' }, // braise plus saturée
-    pointC:      { intensity: 0.45, color: '#F2B98C' }, // rim chaud bas
-    pointD:      { intensity: 0.35, color: '#F5D9B0' }, // frontal très doux chaud
-    envIntensity: 0.55,
+    // Salon = lumière dorée très tamisée façon feu de cheminée en fin de journée.
+    // Le cône doit être perceptible mais clairement moins éclairé que la scène
+    // studio neutre — il s'intègre dans l'ambiance, il ne la domine pas.
+    ambient:     { intensity: 0.22, color: '#F0BE82' }, // ambient ambre doré, doux
+    directional: { intensity: 0.32, color: '#F2B074' }, // soleil tamisé chaud bas
+    pointA:      { intensity: 0.06, color: '#F0BE82' }, // fill froid quasi tué
+    pointB:      { intensity: 0.45, color: '#E08850' }, // braise saturée mais douce
+    pointC:      { intensity: 0.22, color: '#EFB082' }, // rim chaud bas, discret
+    pointD:      { intensity: 0.15, color: '#F2D2A8' }, // frontal très doux chaud
+    envIntensity: 0.32,
   },
 }
 
 function SceneLights({ scrollRef, heroAnchorRef }: SceneLightsProps) {
+  const { scene } = useThree()
   const ambientRef     = useRef<THREE.AmbientLight>(null)
   const directionalRef = useRef<THREE.DirectionalLight>(null)
   const pointARef      = useRef<THREE.PointLight>(null)
@@ -330,6 +333,12 @@ function SceneLights({ scrollRef, heroAnchorRef }: SceneLightsProps) {
       ? Math.max(0, 1 - scrollRef.current.progress / 0.05)
       : 0
     const t = heroFade // 0 studio → 1 salon
+
+    // Environment intensity : lerp studio↔salon (dim l'IBL en hero pour
+    // ne pas surcharger l'éclairage déjà tamisé du salon).
+    scene.environmentIntensity =
+      LIGHT_PRESETS.studio.envIntensity * (1 - t) +
+      LIGHT_PRESETS.salon.envIntensity * t
 
     // Lerp entre studio et salon pour intensity ET couleur.
     const apply = (
