@@ -100,8 +100,8 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    width: '38px',
-                    height: '38px',
+                    width: '44px',
+                    height: '44px',
                     borderRadius: '50%',
                     border: '1px solid rgba(181, 158, 125, 0.25)',
                     display: 'inline-flex',

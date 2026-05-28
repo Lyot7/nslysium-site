@@ -121,6 +121,13 @@ export default function ScrollStory() {
     const container = containerRef.current
     if (!container) return
 
+    // WCAG 2.3.3 : si reduce-motion est demandé, on saute les timelines GSAP
+    // décoratives (fade-in tags/words, indicator). Le scroll-driven progress
+    // pour AetherScene reste actif (driven by user scroll).
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
     const globalTrigger = ScrollTrigger.create({
       trigger: container,
       start: 'top top',
@@ -143,73 +150,83 @@ export default function ScrollStory() {
 
     const panels = container.querySelectorAll<HTMLElement>('.ss-panel')
 
-    panels.forEach((panel, i) => {
-      const content = panel.querySelector<HTMLElement>('.ss-content')
-      if (content) {
-        gsap.fromTo(
-          content,
-          { opacity: 0, y: 48 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: panel,
-              start: 'top 72%',
-              toggleActions: 'play reverse play reverse',
+    if (prefersReducedMotion) {
+      // Sans animation : on force tout en état final visible (opacity 1, no transform).
+      container.querySelectorAll<HTMLElement>('.ss-content, .ss-word, .ss-tag').forEach(
+        (el) => {
+          el.style.opacity = '1'
+          el.style.transform = 'none'
+        },
+      )
+    } else {
+      panels.forEach((panel, i) => {
+        const content = panel.querySelector<HTMLElement>('.ss-content')
+        if (content) {
+          gsap.fromTo(
+            content,
+            { opacity: 0, y: 48 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.9,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: panel,
+                start: 'top 72%',
+                toggleActions: 'play reverse play reverse',
+              },
             },
-          },
-        )
-      }
-
-      const words = panel.querySelectorAll<HTMLElement>('.ss-word')
-      if (words.length) {
-        gsap.fromTo(
-          words,
-          { opacity: 0, y: 28, rotateX: -15 },
-          {
-            opacity: 1,
-            y: 0,
-            rotateX: 0,
-            stagger: 0.055,
-            duration: 0.65,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: panel,
-              start: 'top 68%',
-              toggleActions: 'play reverse play reverse',
-            },
-          },
-        )
-      }
-
-      const tag = panel.querySelector<HTMLElement>('.ss-tag')
-      if (tag) {
-        gsap.fromTo(
-          tag,
-          { opacity: 0, x: -10 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: panel,
-              start: 'top 75%',
-              toggleActions: 'play reverse play reverse',
-            },
-          },
-        )
-      }
-
-      if (i === 0) {
-        const indicator = panel.querySelector<HTMLElement>('.ss-scroll-indicator')
-        if (indicator) {
-          gsap.to(indicator, { y: 8, repeat: -1, yoyo: true, duration: 1.2, ease: 'sine.inOut' })
+          )
         }
-      }
-    })
+
+        const words = panel.querySelectorAll<HTMLElement>('.ss-word')
+        if (words.length) {
+          gsap.fromTo(
+            words,
+            { opacity: 0, y: 28, rotateX: -15 },
+            {
+              opacity: 1,
+              y: 0,
+              rotateX: 0,
+              stagger: 0.055,
+              duration: 0.65,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: panel,
+                start: 'top 68%',
+                toggleActions: 'play reverse play reverse',
+              },
+            },
+          )
+        }
+
+        const tag = panel.querySelector<HTMLElement>('.ss-tag')
+        if (tag) {
+          gsap.fromTo(
+            tag,
+            { opacity: 0, x: -10 },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: panel,
+                start: 'top 75%',
+                toggleActions: 'play reverse play reverse',
+              },
+            },
+          )
+        }
+
+        if (i === 0) {
+          const indicator = panel.querySelector<HTMLElement>('.ss-scroll-indicator')
+          if (indicator) {
+            gsap.to(indicator, { y: 8, repeat: -1, yoyo: true, duration: 1.2, ease: 'sine.inOut' })
+          }
+        }
+      })
+    }
 
     return () => {
       globalTrigger.kill()
@@ -380,7 +397,7 @@ export default function ScrollStory() {
           id="hero"
           className="ss-panel"
           style={{
-            minHeight: '100vh',
+            minHeight: '100dvh',
             display: 'grid',
             gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1fr',
             alignItems: 'start',
@@ -396,7 +413,7 @@ export default function ScrollStory() {
                 ? '5rem 1.5rem 5rem'
                 : '5rem clamp(2rem, 3vw, 3rem) 5rem clamp(2.5rem, 7vw, 6rem)',
               textAlign: isMobile ? 'center' : 'left',
-              minHeight: '100vh',
+              minHeight: '100dvh',
               // Pas de voile rectangulaire : la lisibilité est assurée par le halo
               // global dans l'overlay parent + un text-shadow doux sur chaque ligne.
               background: 'transparent',
@@ -512,7 +529,7 @@ export default function ScrollStory() {
           id="voix"
           className="ss-panel"
           style={{
-            minHeight: '100vh',
+            minHeight: '100dvh',
             display: 'grid',
             gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
             alignItems: 'center',
@@ -568,7 +585,7 @@ export default function ScrollStory() {
           id="moments"
           className="ss-panel"
           style={{
-            minHeight: '100vh',
+            minHeight: '100dvh',
             display: 'grid',
             gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr',
             alignItems: isMobile ? 'flex-end' : 'stretch',
@@ -613,10 +630,8 @@ export default function ScrollStory() {
                   style={{
                     padding: '1.25rem 1.4rem',
                     borderRadius: '0.85rem',
-                    background: 'rgba(34,30,24,0.55)',
+                    background: '#2A241D',
                     border: '1px solid rgba(181, 158, 125,0.14)',
-                    backdropFilter: 'blur(12px)',
-                    WebkitBackdropFilter: 'blur(12px)',
                   }}
                 >
                   <div
@@ -666,7 +681,7 @@ export default function ScrollStory() {
           id="commencer"
           className="ss-panel"
           style={{
-            minHeight: '100vh',
+            minHeight: '100dvh',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

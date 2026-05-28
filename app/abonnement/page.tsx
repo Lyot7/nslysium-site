@@ -48,7 +48,7 @@ const TIERS: Tier[] = [
     period: '/ mois',
     tagline: "Le quotidien orchestré, pour la plupart.",
     highlight: true,
-    badge: 'Le plus choisi',
+    badge: 'Recommandé',
     features: [
       'Sport, nutrition et sommeil unifiés',
       'Commandes vocales illimitées',
@@ -280,13 +280,11 @@ export default function AbonnementPage() {
                 padding: '2rem 1.75rem',
                 borderRadius: '1.25rem',
                 background: tier.highlight
-                  ? 'linear-gradient(180deg, rgba(181, 158, 125,0.12), rgba(34,30,24,0.85))'
-                  : 'rgba(34,30,24,0.6)',
+                  ? 'linear-gradient(180deg, rgba(181, 158, 125,0.12), #2A241D)'
+                  : '#2A241D',
                 border: tier.highlight
                   ? '1.5px solid rgba(181, 158, 125,0.55)'
                   : '1px solid rgba(181, 158, 125,0.13)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
                 display: 'flex',
                 flexDirection: 'column',
                 boxShadow: tier.highlight

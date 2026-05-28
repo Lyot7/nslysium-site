@@ -118,6 +118,20 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef, heroAnchorRef }: SpeakerM
   // Matériaux colorables avec leur couleur originale du GLB sauvegardée
   const colorableMats = useRef<Array<{ mat: THREE.MeshStandardMaterial; orig: THREE.Color }>>([])
 
+  // WCAG 2.3.3 : si reduce-motion est demandé, on coupe le flottement sin et
+  // la dérive souris idle. La position scroll-driven reste (elle est sous
+  // contrôle de l'utilisateur via le scroll, donc autorisée).
+  const reduceMotionRef = useRef(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    reduceMotionRef.current = mq.matches
+    const handler = (e: MediaQueryListEvent) => {
+      reduceMotionRef.current = e.matches
+    }
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
   useEffect(() => {
     const seen = new Set<string>()
     colorableMats.current = []
@@ -211,7 +225,8 @@ function SpeakerModel({ scrollRef, mouseRef, colorRef, heroAnchorRef }: SpeakerM
     const trz = a.rotZ + (b.rotZ - a.rotZ) * st
 
     // ── Idle activity : OFF quand posé sur la table (heroFade≈1), ON sinon ──
-    const idleActivity = 1 - heroFade
+    // Force OFF si l'utilisateur a demandé reduce-motion (WCAG 2.3.3).
+    const idleActivity = reduceMotionRef.current ? 0 : (1 - heroFade)
     const mX = mouseRef.current.x * idleActivity
     const mY = mouseRef.current.y * idleActivity
 

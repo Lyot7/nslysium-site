@@ -116,11 +116,22 @@ export default function VoiceSimulator() {
     }
   }
 
-  // Auto-cycling des démos si l'utilisateur ne touche pas
+  // Auto-cycling des démos si l'utilisateur ne touche pas.
+  // Gated par prefers-reduced-motion (WCAG 2.3.3) ET document.visibilityState
+  // pour éviter d'animer dans un onglet inactif.
   useEffect(() => {
     if (userControlled) return
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+    if (prefersReducedMotion) {
+      // Affiche la première démo en statique, sans audio ni autoplay.
+      setActiveIdx(0)
+      return
+    }
     playSequence(0)
     const cycle = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') return
       setActiveIdx((prev) => {
         const next = (prev + 1) % DEMOS.length
         playSequence(next)
@@ -133,6 +144,16 @@ export default function VoiceSimulator() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userControlled])
+
+  // Cleanup AudioContext au démontage du composant
+  useEffect(
+    () => () => {
+      audioCtxRef.current?.close().catch(() => {
+        // ignore — context peut déjà être fermé
+      })
+    },
+    [],
+  )
 
   const handleDemoClick = (idx: number) => {
     setUserControlled(true)
@@ -149,10 +170,8 @@ export default function VoiceSimulator() {
         margin: '0 auto',
         padding: 'clamp(1.5rem, 4vw, 2.5rem)',
         borderRadius: '1.5rem',
-        background: 'rgba(34, 30, 24, 0.65)',
+        background: '#2A241D',
         border: '1px solid rgba(181, 158, 125, 0.18)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
         boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
       }}
     >

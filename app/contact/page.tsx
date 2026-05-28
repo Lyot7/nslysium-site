@@ -197,10 +197,8 @@ export default function ContactPage() {
           style={{
             padding: 'clamp(2rem, 4vw, 3rem)',
             borderRadius: '1.25rem',
-            background: 'rgba(34,30,24,0.6)',
+            background: '#2A241D',
             border: '1px solid rgba(181, 158, 125,0.15)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
           }}
         >
           <h2

@@ -198,24 +198,44 @@ export default function ProductHero3D() {
                 aria-label={`Coloris ${c.name} — ${c.description}`}
                 aria-pressed={isActive}
                 style={{
-                  width: isActive ? '44px' : '36px',
-                  height: isActive ? '44px' : '36px',
+                  // Hit area constante 44×44 (WCAG 2.5.5).
+                  // L'effet visuel actif/inactif passe par la pastille intérieure.
+                  width: '44px',
+                  height: '44px',
                   borderRadius: '50%',
-                  background: c.hex,
-                  border: isActive
-                    ? '2px solid rgba(250, 247, 242, 0.95)'
-                    : '1px solid rgba(250, 247, 242, 0.18)',
-                  outline: isActive ? '2px solid rgba(181, 158, 125, 0.45)' : 'none',
-                  outlineOffset: '3px',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s ease',
+                  background: 'transparent',
+                  border: 'none',
                   padding: 0,
+                  cursor: 'pointer',
                   flexShrink: 0,
-                  boxShadow: isActive
-                    ? `0 6px 18px ${c.hex}66`
-                    : '0 2px 6px rgba(0, 0, 0, 0.2)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  outline: 'none',
                 }}
-              />
+              >
+                <span
+                  aria-hidden
+                  style={{
+                    display: 'block',
+                    width: isActive ? '40px' : '30px',
+                    height: isActive ? '40px' : '30px',
+                    borderRadius: '50%',
+                    background: c.hex,
+                    border: isActive
+                      ? '2px solid rgba(250, 247, 242, 0.95)'
+                      : '1px solid rgba(250, 247, 242, 0.18)',
+                    outline: isActive
+                      ? '2px solid rgba(181, 158, 125, 0.45)'
+                      : 'none',
+                    outlineOffset: '3px',
+                    transition: 'all 0.25s ease',
+                    boxShadow: isActive
+                      ? `0 6px 18px ${c.hex}66`
+                      : '0 2px 6px rgba(0, 0, 0, 0.2)',
+                  }}
+                />
+              </button>
             )
           })}
         </div>

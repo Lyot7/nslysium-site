@@ -545,10 +545,8 @@ export default function ProduitPage() {
               style={{
                 padding: '1.75rem',
                 borderRadius: '1rem',
-                background: 'rgba(34,30,24,0.6)',
+                background: '#2A241D',
                 border: '1px solid rgba(181, 158, 125,0.13)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
               }}
             >
               <div
