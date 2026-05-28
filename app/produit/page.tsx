@@ -1,13 +1,11 @@
-import type { Metadata } from 'next'
+'use client'
+
 import Link from 'next/link'
 import ProductHero3D from './_components/ProductHero3D'
 import BetaLysiumMockup from './_components/BetaLysiumMockup'
 
-export const metadata: Metadata = {
-  title: 'Produit — Aether & BetaLysium · NSLysium',
-  description:
-    "Aether, le cône vocal sans écran. BetaLysium, l'app qui orchestre votre quotidien. Découvrez l'écosystème NSLysium.",
-}
+// La metadata est définie dans app/produit/layout.tsx (Server Component)
+// car cette page utilise des handlers onMouseEnter qui demandent "use client".
 
 // ─────────────────────────────────────────────────────────────────────────────
 

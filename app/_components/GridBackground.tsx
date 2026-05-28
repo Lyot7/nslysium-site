@@ -181,6 +181,9 @@ export default function GridBackground() {
         )
       }
 
+      // Le canvas lui-même doit suivre l'alpha — sinon le DOM cache tout.
+      canvas.style.opacity = String(alpha)
+
       renderFrame(alpha)
       rafId = requestAnimationFrame(tick)
     }

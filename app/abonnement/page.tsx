@@ -1,11 +1,9 @@
-import type { Metadata } from 'next'
+'use client'
+
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Abonnement — Freemium · Premium · Elite · NSLysium',
-  description:
-    "Trois formules. Une seule philosophie. Choisissez ce qui vous ressemble. Pas d'engagement.",
-}
+// La metadata est définie dans app/abonnement/layout.tsx (Server Component)
+// car cette page utilise des handlers onMouseEnter qui demandent "use client".
 
 // ─────────────────────────────────────────────────────────────────────────────
 
