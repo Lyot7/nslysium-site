@@ -51,6 +51,9 @@ export default function ScrollStory() {
   const salonAspectRef = useRef(16 / 9) // ratio image, mesuré au mount
   const [activeSection, setActiveSection] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
+  // isPhone : très petit écran (< 540px) → padding-top hero plus court
+  // qu'en tablette (540-767px) où l'on peut se permettre plus d'air en haut.
+  const [isPhone, setIsPhone] = useState(false)
 
   // Recalcule la position du cône (Three.js coords) pour qu'il tombe sur la
   // table de l'image salon. L'image est en background-size: cover → croppée
@@ -88,6 +91,7 @@ export default function ScrollStory() {
   useEffect(() => {
     const check = () => {
       setIsMobile(window.innerWidth < 768)
+      setIsPhone(window.innerWidth < 540)
       recomputeHeroAnchor()
     }
     check()
@@ -330,7 +334,8 @@ export default function ScrollStory() {
           pointerEvents: 'none',
           background: isMobile
             ? // Mobile : halo recalé en haut du viewport (bloc texte en flex-start)
-              'radial-gradient(ellipse 100% 55% at 50% 32%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 35%, transparent 72%, rgba(15, 12, 9, 0.32) 100%)'
+              // Phone (<540) : center Y plus haut (26%). Tablette : 32%.
+              `radial-gradient(ellipse 100% 55% at 50% ${isPhone ? 26 : 32}%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.45) 38%, rgba(15, 12, 9, 0.18) 70%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.32) 0%, transparent 35%, transparent 72%, rgba(15, 12, 9, 0.32) 100%)`
             : // Desktop : halo ovale modéré, laisse respirer l'image salon
               'radial-gradient(ellipse 55% 70% at 28% 45%, rgba(15, 12, 9, 0.7) 0%, rgba(15, 12, 9, 0.42) 40%, rgba(15, 12, 9, 0.16) 72%, transparent 92%), linear-gradient(180deg, rgba(15, 12, 9, 0.28) 0%, transparent 25%, transparent 75%, rgba(15, 12, 9, 0.35) 100%)',
         }}
@@ -412,9 +417,14 @@ export default function ScrollStory() {
               // collé en haut, beaucoup d'espace en bas pour le cône qui sort
               // de la table. Desktop : centré vertical (inchangé).
               justifyContent: isMobile ? 'flex-start' : 'center',
-              padding: isMobile
-                ? '8.5rem 1.5rem 4rem'
-                : '5rem clamp(2rem, 3vw, 3rem) 5rem clamp(2.5rem, 7vw, 6rem)',
+              // Phone (<540px) : padding-top serré pour rester près du header.
+              // Tablette (540-767) : plus d'air en haut.
+              // Desktop (≥768) : centré vertical (inchangé).
+              padding: isPhone
+                ? '6rem 1.5rem 4rem'
+                : isMobile
+                  ? '8.5rem 1.5rem 4rem'
+                  : '5rem clamp(2rem, 3vw, 3rem) 5rem clamp(2.5rem, 7vw, 6rem)',
               textAlign: isMobile ? 'center' : 'left',
               minHeight: '100dvh',
               // Pas de voile rectangulaire : la lisibilité est assurée par le halo
