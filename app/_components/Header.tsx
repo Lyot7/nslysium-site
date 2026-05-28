@@ -62,7 +62,10 @@ export default function Header() {
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: '0.4rem',
-          padding: '0.35rem 0.4rem 0.35rem 0.5rem',
+          // padding symétrique gauche/droite, généreux pour contenir le CTA
+          // (borderRadius 9999px → la courbe rentre fortement aux extrémités,
+          // un CTA pleinement arrondi déborde si le padding-right est trop juste).
+          padding: '0.35rem 0.55rem',
           borderRadius: '9999px',
           background: scrolled
             ? 'rgba(20, 16, 12, 0.85)'
