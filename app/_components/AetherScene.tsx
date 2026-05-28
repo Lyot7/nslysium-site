@@ -302,16 +302,16 @@ const LIGHT_PRESETS = {
     envIntensity: 0.85,
   },
   salon: {
-    // Salon = lumière dorée très tamisée façon feu de cheminée en fin de journée.
-    // Le cône doit être perceptible mais clairement moins éclairé que la scène
-    // studio neutre — il s'intègre dans l'ambiance, il ne la domine pas.
-    ambient:     { intensity: 0.22, color: '#F0BE82' }, // ambient ambre doré, doux
-    directional: { intensity: 0.32, color: '#F2B074' }, // soleil tamisé chaud bas
-    pointA:      { intensity: 0.06, color: '#F0BE82' }, // fill froid quasi tué
-    pointB:      { intensity: 0.45, color: '#E08850' }, // braise saturée mais douce
-    pointC:      { intensity: 0.22, color: '#EFB082' }, // rim chaud bas, discret
-    pointD:      { intensity: 0.15, color: '#F2D2A8' }, // frontal très doux chaud
-    envIntensity: 0.32,
+    // Hero : mêmes couleurs que studio (le cône doit garder sa teinte khaki
+    // exacte, pas virer orange), juste un poil moins intense (~-18%) pour
+    // que le cône s'intègre dans l'ambiance sans dominer la scène salon.
+    ambient:     { intensity: 0.25, color: '#FFF3E0' },
+    directional: { intensity: 1.00, color: '#FFEDD0' },
+    pointA:      { intensity: 0.82, color: '#E8DFFF' },
+    pointB:      { intensity: 1.05, color: '#FFB070' },
+    pointC:      { intensity: 0.50, color: '#FFE4C4' },
+    pointD:      { intensity: 0.72, color: '#FFFFFF' },
+    envIntensity: 0.70,
   },
 }
 
