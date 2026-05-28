@@ -175,12 +175,13 @@ export default function Header() {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              // Taille fixe explicite plus petite que les nav links (32px).
-              // CTA height 26px → half-radius 13. Pill half-radius 31.6.
-              // Marge de containement : 31.6 - (11.2 + 13) = 7.4px ✓.
-              height: '26px',
-              padding: '0 0.85rem',
-              borderRadius: '9999px',
+              // CTA borderRadius 10px (au lieu de 9999) → plus de courbe pleine
+              // qui entre en compétition avec celle du pill. Devient un rounded
+              // rectangle qui se loge proprement dans la courbe parente quel que
+              // soit le viewport (notamment au breakpoint tablette ~900px).
+              height: '28px',
+              padding: '0 0.95rem',
+              borderRadius: '10px',
               background: '#B59E7D',
               color: '#1F1A14',
               fontSize: '0.76rem',
