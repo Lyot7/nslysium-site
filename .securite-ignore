@@ -1,0 +1,1 @@
+GHSA-vfj7-8cjw-p6xm # braces <=3.0.3, aucune version corrigée publiée ; seulement via eslint-config-next (dev, lint), absent de l image standalone
